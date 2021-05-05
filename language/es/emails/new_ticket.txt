@@ -1,0 +1,18 @@
+Estimado %%NAME%%,
+
+Tu ticket de soporte "%%SUBJECT%%" ha sido enviado.
+
+Respondemos a todos los tickets lo antes posible, en un plazo de 24 a 48 horas. Si prevemos que tu ticket tardará más tiempo, te informaremos enviándote un correo electrónico.
+
+ID de seguimiento del ticket: %%TRACK_ID%%
+
+Puedes ver el estado de tu ticket aquí:
+%%TRACK_URL%%
+
+Recibirás una notificación por correo electrónico cuando nuestro personal responda a tu ticket.
+
+
+Atentamente,
+
+%%SITE_TITLE%%
+%%SITE_URL%%

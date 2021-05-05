@@ -1,0 +1,13 @@
+Estimado %%NAME%%,
+
+Acabamos de responder a tu ticket "%%SUBJECT%%".
+
+Para leer el mensaje, enviar una respuesta y ver los detalles, por favor visita
+%%TRACK_URL%%
+
+Si no puedes hacer clic en el enlace anterior, intenta copiarlo y pegarlo en la barra de direcciones de tu navegador.
+
+Atentamente,
+
+%%SITE_TITLE%%
+%%SITE_URL%%
