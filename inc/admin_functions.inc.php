@@ -435,7 +435,7 @@ function hesk_autoLogin($noredirect=0)
 	hesk_limitBfAttempts();
 
 	// Admin login URL
-	$url = $hesk_settings['hesk_url'] . '/' . $hesk_settings['admin_dir'] . '/index.php?a=login&notice=1';
+	$url = $hesk_settings['hesk_url'] . '/' . '/index.php?a=login&notice=1';
 
 	/* Check username */
 	$result = hesk_dbQuery('SELECT * FROM `'.$hesk_settings['db_pfix']."users` WHERE `user` = '".hesk_dbEscape($user)."' LIMIT 1");
@@ -547,7 +547,7 @@ function hesk_isLoggedIn()
 	$referer = str_replace('&amp;','&',$referer);
 
 	// Admin login URL
-	$url = $hesk_settings['hesk_url'] . '/' . $hesk_settings['admin_dir'] . '/index.php?a=login&notice=1&goto='.urlencode($referer);
+	$url = $hesk_settings['hesk_url'] . '/' . '/index.php?a=login&notice=1&goto='.urlencode($referer);
 
     if ( empty($_SESSION['id']) || empty($_SESSION['session_verify']) )
     {
@@ -621,7 +621,7 @@ function hesk_isLoggedIn()
 function hesk_verifyGoto()
 {
 	// Default redirect URL
-	$url_default = 'admin_main.php';
+	$url_default = 'admin/admin_main.php';
 
 	// If no "goto" parameter is set, redirect to the default page
 	if ( ! hesk_isREQUEST('goto') )

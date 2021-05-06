@@ -519,7 +519,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             <a href="profile.php" class="btn btn-border" ripple="ripple"><?php echo $hesklang['view_profile']; ?></a>
                         </div>
                         <div class="profile--logout">
-                            <a href="index.php?a=logout&token=<?php hesk_token_echo(); ?>">
+                            <a href="../index.php?a=logout&token=<?php hesk_token_echo(); ?>">
                                 <svg class="icon icon-log-out">
                                     <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-log-out"></use>
                                 </svg>

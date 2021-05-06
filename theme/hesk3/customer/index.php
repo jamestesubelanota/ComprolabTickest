@@ -101,7 +101,7 @@ require_once(TEMPLATE_PATH . 'customer/util/rating.php');
                 </div>
                 <?php hesk3_show_messages($service_messages); ?>
                 <div class="nav">
-                    <a href="index.php?a=add" class="navlink">
+                    <a href="custo.php?a=add" class="navlink">
                         <div class="icon-in-circle">
                             <svg class="icon icon-submit-ticket">
                                 <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-submit-ticket"></use>

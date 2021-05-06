@@ -115,7 +115,7 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
                 <?php else: ?>
                     <div class="nav">
                         <?php foreach ($hesk_settings['categories'] as $k => $v): ?>
-                        <a href="index.php?a=add&amp;category=<?php echo $k; ?>" class="navlink <?php if ($category_count > 8) echo "navlink-condensed"; ?>">
+                        <a href="custo.php?a=add&amp;category=<?php echo $k; ?>" class="navlink <?php if ($category_count > 8) echo "navlink-condensed"; ?>">
                             <div class="icon-in-circle">
                                 <svg class="icon icon-chevron-right">
                                     <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-chevron-right"></use>

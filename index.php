@@ -10,137 +10,246 @@
  * https://www.hesk.com/eula.php
  *
  */
+
 define('IN_SCRIPT',1);
-define('HESK_PATH','./');
+define('HESK_PATH','');
 
-// Get all the required files and functions
+/* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-define('TEMPLATE_PATH', HESK_PATH . "theme/{$hesk_settings['site_theme']}/");
 require(HESK_PATH . 'inc/common.inc.php');
+require(HESK_PATH . 'inc/admin_functions.inc.php');
+hesk_load_database_functions();
 
-// Are we in maintenance mode?
-hesk_check_maintenance();
+hesk_session_start();
+hesk_dbConnect();
 
-// Are we in "Knowledgebase only" mode?
-hesk_check_kb_only();
-
-// What should we do?
+/* What should we do? */
 $action = hesk_REQUEST('a');
 
 switch ($action)
 {
-	case 'add':
-		hesk_session_start();
-        print_add_ticket();
-	    break;
-
-	case 'forgot_tid':
-		hesk_session_start();
-        forgot_tid();
-	    break;
-
-	default:
-		print_start();
+    case 'do_login':
+    	do_login();
+        break;
+    case 'login':
+    	print_login();
+        break;
+    case 'logout':
+    	logout();
+        break;
+    default:
+    	hesk_autoLogin();
+    	print_login();
 }
 
-// Print footer
+/* Print footer */
+require_once(HESK_PATH . 'inc/footer.inc.php');
 exit();
 
 /*** START FUNCTIONS ***/
-
-
-function print_select_category($number_of_categories)
+function do_login()
 {
 	global $hesk_settings, $hesklang;
 
-	// Print header
-	$hesk_settings['tmp_title'] = $hesk_settings['hesk_title'] . ' - ' . $hesklang['select_category'];
+    $hesk_error_buffer = array();
 
-	// A categoy needs to be selected
-	if (isset($_GET['category']) && empty($_GET['category']))
+    $user = hesk_input( hesk_POST('user') );
+    if (empty($user))
+    {
+		$myerror = $hesk_settings['list_users'] ? $hesklang['select_username'] : $hesklang['enter_username'];
+        $hesk_error_buffer['user'] = $myerror;
+    }
+    define('HESK_USER', $user);
+
+	$pass = hesk_input( hesk_POST('pass') );
+	if (empty($pass))
 	{
-		hesk_process_messages($hesklang['sel_app_cat'],'NOREDIRECT','NOTICE');
+    	$hesk_error_buffer['pass'] = $hesklang['enter_pass'];
 	}
 
-    /* This will handle error, success and notice messages */
-    $messages = hesk_get_messages();
-
-	$hesk_settings['render_template'](TEMPLATE_PATH . 'customer/create-ticket/category-select.php', array('messages' => $messages));
-
-	return true;
-} // END print_select_category()
-
-
-function print_add_ticket()
-{
-	global $hesk_settings, $hesklang;
-
-	// Connect to the database
-	hesk_load_database_functions();
-	hesk_dbConnect();
-
-	// Load custom fields
-	require_once(HESK_PATH . 'inc/custom_fields.inc.php');
-
-	// Load calendar JS and CSS
-    define('CALENDAR',1);
-
-	// Auto-focus first empty or error field
-	define('AUTOFOCUS', true);
-
-	// Pre-populate fields
-	// Customer name
-	if ( isset($_REQUEST['name']) )
+	if ($hesk_settings['secimg_use'] == 2 && !isset($_SESSION['img_a_verified']))
 	{
-		$_SESSION['c_name'] = $_REQUEST['name'];
-	}
-
-	// Customer email address
-	if ( isset($_REQUEST['email']) )
-	{
-		$_SESSION['c_email']  = $_REQUEST['email'];
-		$_SESSION['c_email2'] = $_REQUEST['email'];
-	}
-
-	// Priority
-	if ( isset($_REQUEST['priority']) )
-	{
-		$_SESSION['c_priority'] = intval($_REQUEST['priority']);
-	}
-
-	// Subject
-	if ( isset($_REQUEST['subject']) )
-	{
-		$_SESSION['c_subject'] = $_REQUEST['subject'];
-	}
-
-	// Message
-	if ( isset($_REQUEST['message']) )
-	{
-		$_SESSION['c_message'] = $_REQUEST['message'];
-	}
-
-	// Custom fields
-	foreach ($hesk_settings['custom_fields'] as $k=>$v)
-	{
-		if ($v['use']==1 && isset($_REQUEST[$k]) )
+		// Using reCAPTCHA?
+		if ($hesk_settings['recaptcha_use'])
 		{
-			$_SESSION['c_'.$k] = $_REQUEST[$k];
+			require(HESK_PATH . 'inc/recaptcha/recaptchalib_v2.php');
+
+			$resp = null;
+			$reCaptcha = new ReCaptcha($hesk_settings['recaptcha_private_key']);
+
+			// Was there a reCAPTCHA response?
+			if ( isset($_POST["g-recaptcha-response"]) )
+			{
+				$resp = $reCaptcha->verifyResponse(hesk_getClientIP(), hesk_POST("g-recaptcha-response") );
+			}
+
+			if ($resp != null && $resp->success)
+			{
+				$_SESSION['img_a_verified']=true;
+			}
+			else
+			{
+				$hesk_error_buffer['mysecnum']=$hesklang['recaptcha_error'];
+			}
+		}
+		// Using PHP generated image
+		else
+		{
+			$mysecnum = intval( hesk_POST('mysecnum', 0) );
+
+			if ( empty($mysecnum) )
+			{
+				$hesk_error_buffer['mysecnum'] = $hesklang['sec_miss'];
+			}
+			else
+			{
+				require(HESK_PATH . 'inc/secimg.inc.php');
+				$sc = new PJ_SecurityImage($hesk_settings['secimg_sum']);
+				if ( isset($_SESSION['checksum']) && $sc->checkCode($mysecnum, $_SESSION['checksum']) )
+				{
+					$_SESSION['img_a_verified'] = true;
+				}
+				else
+				{
+					$hesk_error_buffer['mysecnum'] = $hesklang['sec_wrng'];
+				}
+			}
 		}
 	}
 
-	// Varibles for coloring the fields in case of errors
-	if ( ! isset($_SESSION['iserror']))
+    /* Any missing fields? */
+	if (count($hesk_error_buffer)!=0)
 	{
-		$_SESSION['iserror'] = array();
+    	$_SESSION['a_iserror'] = array_keys($hesk_error_buffer);
+
+	    $tmp = '';
+	    foreach ($hesk_error_buffer as $error)
+	    {
+	        $tmp .= "<li>$error</li>\n";
+	    }
+	    $hesk_error_buffer = $tmp;
+
+	    $hesk_error_buffer = $hesklang['pcer'].'<br /><br /><ul>'.$hesk_error_buffer.'</ul>';
+	    hesk_process_messages($hesk_error_buffer,'NOREDIRECT');
+        print_login();
+        exit();
+	}
+    elseif (isset($_SESSION['img_a_verified']))
+    {
+		unset($_SESSION['img_a_verified']);
+    }
+
+	/* User entered all required info, now lets limit brute force attempts */
+	hesk_limitBfAttempts();
+
+	$result = hesk_dbQuery("SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` WHERE `user` = '".hesk_dbEscape($user)."' LIMIT 1");
+	if (hesk_dbNumRows($result) != 1)
+	{
+        hesk_session_stop();
+    	$_SESSION['a_iserror'] = array('user','pass');
+    	hesk_process_messages($hesklang['wrong_user'],'NOREDIRECT');
+        print_login();
+        exit();
 	}
 
-	if ( ! isset($_SESSION['isnotice']))
+	$res=hesk_dbFetchAssoc($result);
+	foreach ($res as $k=>$v)
 	{
-		$_SESSION['isnotice'] = array();
+	    $_SESSION[$k]=$v;
 	}
 
-	hesk_cleanSessionVars('already_submitted');
+	/* Check password */
+	if (hesk_Pass2Hash($pass) != $_SESSION['pass'])
+    {
+        hesk_session_stop();
+    	$_SESSION['a_iserror'] = array('pass');
+		hesk_process_messages($hesklang['wrong_pass'],'NOREDIRECT');
+		print_login();
+		exit();
+	}
+
+    $pass_enc = hesk_Pass2Hash($_SESSION['pass'].hesk_mb_strtolower($user).$_SESSION['pass']);
+
+    /* Check if default password */
+    if ($_SESSION['pass'] == '499d74967b28a841c98bb4baaabaad699ff3c079')
+    {
+    	hesk_process_messages($hesklang['chdp'],'NOREDIRECT','NOTICE');
+    }
+
+	// Set a tag that will be used to expire sessions after username or password change
+	$_SESSION['session_verify'] = hesk_activeSessionCreateTag($user, $_SESSION['pass']);
+
+	// We don't need the password hash anymore
+	unset($_SESSION['pass']);
+
+	/* Login successful, clean brute force attempts */
+	hesk_cleanBfAttempts();
+
+	/* Regenerate session ID (security) */
+	hesk_session_regenerate_id();
+
+	/* Remember username? */
+	if ($hesk_settings['autologin'] && hesk_POST('remember_user') == 'AUTOLOGIN')
+	{
+		hesk_setcookie('hesk_username', "$user", strtotime('+1 year'));
+		hesk_setcookie('hesk_p', "$pass_enc", strtotime('+1 year'));
+	}
+	elseif ( hesk_POST('remember_user') == 'JUSTUSER')
+	{
+		hesk_setcookie('hesk_username', "$user", strtotime('+1 year'));
+		hesk_setcookie('hesk_p', '');
+	}
+	else
+	{
+		// Expire cookie if set otherwise
+		hesk_setcookie('hesk_username', '');
+		hesk_setcookie('hesk_p', '');
+	}
+
+    /* Close any old tickets here so Cron jobs aren't necessary */
+	if ($hesk_settings['autoclose'])
+    {
+    	$revision = sprintf($hesklang['thist3'],hesk_date(),$hesklang['auto']);
+		$dt  = date('Y-m-d H:i:s',time() - $hesk_settings['autoclose']*86400);
+
+		// Notify customer of closed ticket?
+		if ($hesk_settings['notify_closed'])
+		{
+			// Get list of tickets
+			$result = hesk_dbQuery("SELECT * FROM `".$hesk_settings['db_pfix']."tickets` WHERE `status` = '2' AND `lastchange` <= '".hesk_dbEscape($dt)."' ");
+			if (hesk_dbNumRows($result) > 0)
+			{
+				global $ticket;
+
+				// Load required functions?
+				if ( ! function_exists('hesk_notifyCustomer') )
+				{
+					require(HESK_PATH . 'inc/email_functions.inc.php');
+				}
+
+				while ($ticket = hesk_dbFetchAssoc($result))
+				{
+					$ticket['dt'] = hesk_date($ticket['dt'], true);
+					$ticket['lastchange'] = hesk_date($ticket['lastchange'], true);
+					$ticket = hesk_ticketToPlain($ticket, 1, 0);
+					hesk_notifyCustomer('ticket_closed');
+				}
+			}
+		}
+
+		// Update ticket statuses and history in database
+		hesk_dbQuery("UPDATE `".$hesk_settings['db_pfix']."tickets` SET `status`='3', `closedat`=NOW(), `closedby`='-1', `history`=CONCAT(`history`,'".hesk_dbEscape($revision)."') WHERE `status` = '2' AND `lastchange` <= '".hesk_dbEscape($dt)."' ");
+    }
+
+	/* Redirect to the destination page */
+	header('Location: ' . hesk_verifyGoto() );
+	exit();
+} // End do_login()
+
+
+function print_login()
+{
+	global $hesk_settings, $hesklang;
 
 	// Tell header to load reCaptcha API if needed
 	if ($hesk_settings['recaptcha_use'])
@@ -148,384 +257,243 @@ function print_add_ticket()
 		define('RECAPTCHA',1);
 	}
 
-	// Get categories
-	$hesk_settings['categories'] = array();
-	$res = hesk_dbQuery("SELECT `id`, `name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `type`='0' ORDER BY `cat_order` ASC");
-	while ($row=hesk_dbFetchAssoc($res))
+    $hesk_settings['tmp_title'] = $hesk_settings['hesk_title'] . ' - ' .$hesklang['admin_login'];
+	require_once(HESK_PATH . 'inc/header.inc.php');
+
+	if ( hesk_isREQUEST('notice') )
 	{
-		$hesk_settings['categories'][$row['id']] = $row['name'];
+    	hesk_process_messages($hesklang['session_expired'],'NOREDIRECT');
 	}
 
-	$number_of_categories = count($hesk_settings['categories']);
-
-	if ($number_of_categories == 0)
-	{
-		$category = 1;
-        $res = hesk_dbQuery("SELECT `id`, `name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `id`=1");
-        while ($row=hesk_dbFetchAssoc($res))
-        {
-            $hesk_settings['categories'][$row['id']] = $row['name'];
-        }
-	}
-	elseif ($number_of_categories == 1)
-	{
-		$category = current(array_keys($hesk_settings['categories']));
-	}
-	else
-	{
-		$category = isset($_GET['catid']) ? hesk_REQUEST('catid'): hesk_REQUEST('category');
-
-		// Force the customer to select a category?
-		if (! isset($hesk_settings['categories'][$category]) )
-		{
-			return print_select_category($number_of_categories);
-		}
-	}
-
-	// Print header
-	$hesk_settings['tmp_title'] = $hesk_settings['hesk_title'] . ' - ' . $hesklang['submit_ticket'];
-
-	$messages = hesk_get_messages();
-
-	$visible_custom_fields_before_message = array();
-	$visible_custom_fields_after_message = array();
-	$custom_fields_before_message = array();
-	$custom_fields_after_message = array();
-    foreach ($hesk_settings['custom_fields'] as $k=>$v) {
-        if ($v['use'] == 1 && hesk_is_custom_field_in_category($k, $category)) {
-            if ($v['type'] == 'checkbox') {
-                $k_value = array();
-                if (isset($_SESSION["c_$k"]) && is_array($_SESSION["c_$k"])) {
-                    foreach ($_SESSION["c_$k"] as $myCB) {
-                        $k_value[] = stripslashes(hesk_input($myCB));
-                    }
-                }
-            } elseif (isset($_SESSION["c_$k"])) {
-                $k_value = stripslashes(hesk_input($_SESSION["c_$k"]));
-            } else {
-                $k_value = '';
-            }
-
-            switch ($v['type']) {
-                /* Radio box */
-                case 'radio':
-                    $v['iserror'] = in_array($k, $_SESSION['iserror']);
-                    $v['name'] = $k;
-
-                    $v['value']['options'] = array();
-                    foreach ($v['value']['radio_options'] as $option) {
-                        if (strlen($k_value) == 0) {
-                            $k_value = $option;
-                            $checked = empty($v['value']['no_default']);
-                        } elseif ($k_value == $option) {
-                            $k_value = $option;
-                            $checked = true;
-                        } else {
-                            $checked = false;
-                        }
-
-                        $v['value']['options'][] = array(
-                            'value' => $option,
-                            'selected' => $checked
-                        );
-                    }
-
-                    if ($v['place'] == 0) {
-                        $visible_custom_fields_before_message[] = $v;
-                        $custom_fields_before_message[] = $v;
-                    } else {
-                        $visible_custom_fields_after_message[] = $v;
-                        $custom_fields_after_message[] = $v;
-                    }
-                    break;
-
-                /* Select drop-down box */
-                case 'select':
-                    $v['iserror'] = in_array($k, $_SESSION['iserror']);
-                    $v['name'] = $k;
-
-                    $v['value']['options'] = array();
-                    foreach ($v['value']['select_options'] as $option) {
-                        if ($k_value == $option) {
-                            $k_value = $option;
-                            $selected = true;
-                        } else {
-                            $selected = false;
-                        }
-
-                        $v['value']['options'][] = array(
-                            'value' => $option,
-                            'selected' => $selected
-                        );
-                    }
-
-                    if ($v['place'] == 0) {
-                        $visible_custom_fields_before_message[] = $v;
-                        $custom_fields_before_message[] = $v;
-                    } else {
-                        $visible_custom_fields_after_message[] = $v;
-                        $custom_fields_after_message[] = $v;
-                    }
-                    break;
-
-                /* Checkbox */
-                case 'checkbox':
-                    $v['iserror'] = in_array($k, $_SESSION['iserror']);
-                    $v['name'] = $k;
-
-                    $v['value']['options'] = array();
-                    foreach ($v['value']['checkbox_options'] as $option) {
-                        if (in_array($option, $k_value)) {
-                            $checked = 'checked';
-                        } else {
-                            $checked = '';
-                        }
-
-                        $v['value']['options'][] = array(
-                            'value' => $option,
-                            'selected' => $checked
-                        );
-                    }
-
-                    if ($v['place'] == 0) {
-                        $visible_custom_fields_before_message[] = $v;
-                        $custom_fields_before_message[] = $v;
-                    } else {
-                        $visible_custom_fields_after_message[] = $v;
-                        $custom_fields_after_message[] = $v;
-                    }
-                    break;
-
-                /* Large text box */
-                // Date
-                case 'textarea':
-                case 'date':
-                case 'email':
-                    $v['original_value'] = $k_value;
-                    $v['iserror'] = in_array($k, $_SESSION['iserror']);
-                    $v['name'] = $k;
-
-                    if ($v['place'] == 0) {
-                        $visible_custom_fields_before_message[] = $v;
-                        $custom_fields_before_message[] = $v;
-                    } else {
-                        $visible_custom_fields_after_message[] = $v;
-                        $custom_fields_after_message[] = $v;
-                    }
-                    break;
-
-                // Hidden
-                case 'hidden':
-                    if (strlen($k_value) != 0 || isset($_SESSION["c_$k"])) {
-                        $v['value']['default_value'] = $k_value;
-                    }
-
-                    $v['name'] = $k;
-
-                    if ($v['place'] == 0) {
-                        $custom_fields_before_message[] = $v;
-                    } else {
-                        $custom_fields_after_message[] = $v;
-                    }
-                    break;
-
-                /* Default text input */
-                default:
-                    if (strlen($k_value) != 0 || isset($_SESSION["c_$k"])) {
-                        $v['value']['default_value'] = $k_value;
-                    }
-
-                    $v['iserror'] = in_array($k, $_SESSION['iserror']);
-                    $v['name'] = $k;
-
-                    if ($v['place'] == 0) {
-                        $visible_custom_fields_before_message[] = $v;
-                        $custom_fields_before_message[] = $v;
-                    } else {
-                        $visible_custom_fields_after_message[] = $v;
-                        $custom_fields_after_message[] = $v;
-                    }
-            }
-        }
+    if (!isset($_SESSION['a_iserror']))
+    {
+    	$_SESSION['a_iserror'] = array();
     }
 
-	$hesk_settings['render_template'](TEMPLATE_PATH . 'customer/create-ticket/create-ticket.php', array(
-	        'categoryId' => $category,
-	        'categoryName' => $hesk_settings['categories'][$category],
-            'messages' => $messages,
-            'visibleCustomFieldsBeforeMessage' => $visible_custom_fields_before_message,
-            'visibleCustomFieldsAfterMessage' => $visible_custom_fields_after_message,
-            'customFieldsBeforeMessage' => $custom_fields_before_message,
-            'customFieldsAfterMessage' => $custom_fields_after_message
-    ));
+    $login_wrapper = true;
+	?>
+    <div class="wrapper login">
+        <main class="main">
+            <div class="reg__wrap">
+               
+                <div class="reg__section">
 
-    hesk_cleanSessionVars('iserror');
-    hesk_cleanSessionVars('isnotice');
+                <div class="centrado">
+                    <a href="../index.php" class="navbar__logo">
+                        <?php  echo $hesklang['help_desk'] ?>
+                    </a>
+                </div>
+                    <div class="reg__box">
 
-    return true;
-} // End print_add_ticket()
+                        <h2 class="reg__heading"><?php echo $hesklang['admin_login']; ?></h2>
+                        <div style="margin-right: -24px; margin-left: -16px">
+                            <?php
+                            /* This will handle error, success and notice messages */
+                            hesk_handle_messages();
+                            ?>
+                        </div>
+                        <form action="index.php" class="form <?php echo isset($_SESSION['a_iserror']) && count($_SESSION['a_iserror']) ? 'invalid' : ''; ?>" id="form1" method="post" name="form1" novalidate>
+                            <div class="form-group">
+                                <label for="regInputUsername"><?php echo $hesklang['username']; ?></label>
+                                <?php
+
+                                $cls = in_array('user',$_SESSION['a_iserror']) ? 'isError' : '';
+
+                                if ( defined('HESK_DEMO')) {
+                                    $savedUser = 'Demo';
+                                } elseif (defined('HESK_USER')) {
+                                    $savedUser = HESK_USER;
+                                } else {
+                                    $savedUser = hesk_htmlspecialchars(hesk_COOKIE('hesk_username'));
+                                }
+
+                                $is_1 = '';
+                                $is_2 = '';
+                                $is_3 = '';
+
+                                $remember_user = hesk_POST('remember_user');
+
+                                if ($hesk_settings['autologin'] && (isset($_COOKIE['hesk_p']) || $remember_user == 'AUTOLOGIN') )
+                                {
+                                    $is_1 = 'checked';
+                                }
+                                elseif (isset($_COOKIE['hesk_username']) || $remember_user == 'JUSTUSER' )
+                                {
+                                    $is_2 = 'checked';
+                                }
+                                else
+                                {
+                                    $is_3 = 'checked';
+                                }
+
+                                if ($hesk_settings['list_users']) {
+                                    echo '<select name="user" class="'.$cls.'">';
+                                    $res = hesk_dbQuery('SELECT `user` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` ORDER BY `user` ASC');
+                                    while ($row=hesk_dbFetchAssoc($res))
+                                    {
+                                        $sel = (hesk_mb_strtolower($savedUser) == hesk_mb_strtolower($row['user'])) ? 'selected="selected"' : '';
+                                        echo '<option value="'.$row['user'].'" '.$sel.'>'.$row['user'].'</option>';
+                                    }
+                                    echo '</select>';
+
+                                } else {
+                                    echo '<input type="text" class="form-control '.$cls.'" id="regInputUsername" name="user" value="'.$savedUser.'" required>';
+                                }
+                                ?>
+                                <div class="form-control__error"><?php echo $hesklang['this_field_is_required']; ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="regInputPassword"><?php echo $hesklang['pass']; ?></label>
+                                <div class="input-group">
+                                    <?php
+                                    $class = 'class="form-control';
+                                    if (in_array('pass',$_SESSION['a_iserror'])) {
+                                        $class .= ' isError';
+                                    }
+                                    $class .= '"';
+                                    ?>
+                                    <input type="password" name="pass" id="regInputPassword" <?php echo $class; ?>
+                                        <?php if (defined('HESK_DEMO')) {echo ' value="demo1"';} ?>>
+                                    <div class="input-group-append--icon passwordIsHidden">
+                                        <svg class="icon icon-eye-close">
+                                            <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-eye-close"></use>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="form-control__error"><?php echo $hesklang['this_field_is_required']; ?></div>
+                            </div>
+                            <?php if ($hesk_settings['secimg_use'] == 2 && $hesk_settings['recaptcha_use'] != 1): ?>
+                            <div>
+                                <?php
+                                // SPAM prevention verified for this session
+                                if (isset($_SESSION['img_a_verified']))
+                                {
+                                    //-- No-op
+                                }
+                                // Use reCaptcha API v2?
+                                elseif ($hesk_settings['recaptcha_use'] == 2)
+                                {
+                                    ?>
+                                    <div class="g-recaptcha" data-sitekey="<?php echo $hesk_settings['recaptcha_public_key']; ?>"></div>
+                                    <?php
+                                }
+                                // At least use some basic PHP generated image (better than nothing)
+                                else
+                                {
+                                    $cls = in_array('mysecnum',$_SESSION['a_iserror']) ? ' class="form-control isError" ' : ' class="form-control" ';
+
+                                    echo '<div class="form-group"><label>'.$hesklang['sec_enter'].'</label><img src="'.HESK_PATH.'print_sec_img.php?'.rand(10000,99999).'" width="150" height="40" alt="'.$hesklang['sec_img'].'" title="'.$hesklang['sec_img'].'" border="1" name="secimg" style="vertical-align:middle" /> '.
+                                        '<a style="vertical-align: middle; display: inline" class="btn btn-refresh" href="javascript:" onclick="document.form1.secimg.src=\''.HESK_PATH.'print_sec_img.php?\'+ ( Math.floor((90000)*Math.random()) + 10000);">
+                                            <svg class="icon icon-refresh">
+                                                <use xlink:href="' . HESK_PATH . 'img/sprite.svg#icon-refresh"></use>
+                                            </svg>
+                                         </a>'.
+                                        '<br><br><input type="text" name="mysecnum" size="20" maxlength="5" '.$cls.'></div>';
+                                }
+                                ?>
+                            </div>
+                            <?php
+                            endif;
+                            if ($hesk_settings['autologin']):
+                            ?>
+                                <div class="radio-group">
+                                    <div class="radio-list">
+                                        <div class="radio-custom" style="margin-top: 5px;">
+                                            <input type="radio" id="remember_userAUTOLOGIN" name="remember_user" value="AUTOLOGIN" <?php echo $is_1; ?>>
+                                            <label for="remember_userAUTOLOGIN"><?php echo $hesklang['autologin']; ?></label>
+                                        </div>
+                                        <div class="radio-custom" style="margin-top: 5px;">
+                                            <input type="radio" id="remember_userJUSTUSER" name="remember_user" value="JUSTUSER" <?php echo $is_2; ?>>
+                                            <label for="remember_userJUSTUSER"><?php echo $hesklang['just_user']; ?></label>
+                                        </div>
+                                        <div class="radio-custom" style="margin-top: 5px;">
+                                            <input type="radio" id="remember_userNOTHANKS" name="remember_user" value="NOTHANKS" <?php echo $is_3; ?>>
+                                            <label for="remember_userNOTHANKS"><?php echo $hesklang['nothx']; ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="reg__checkboxes">
+                                    <div class="form-group">
+                                        <div class="checkbox-custom">
+                                            <input type="checkbox" id="tableCheckboxId2" name="remember_user" value="JUSTUSER" <?php echo $is_2; ?> />
+                                            <label for="tableCheckboxId2"><?php echo $hesklang['remember_user']; ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <div class="form__submit">
+                                <button class="btn btn-full" ripple="ripple" type="submit" id="recaptcha-submit">
+                                    <?php echo $hesklang['click_login']; ?>
+                                </button>
+                                <input type="hidden" name="a" value="do_login">
+                                <?php
+                                if (hesk_isREQUEST('goto') && $url=hesk_REQUEST('goto'))
+                                {
+                                    echo '<input type="hidden" name="goto" value="'.$url.'">';
+                                }
+                                ?>
+                            </div>
+                            <?php if ($hesk_settings['reset_pass']): ?>
+                                <div class="reg__footer">
+                                    <a href="password.php" class="link"><?php echo $hesklang['fpass']; ?></a>
+                                </div>
+                            <?php
+                            endif;
+
+                            // Use Invisible reCAPTCHA?
+                            if ($hesk_settings['secimg_use'] == 2 && $hesk_settings['recaptcha_use'] == 1 && ! isset($_SESSION['img_a_verified'])): ?>
+                                <div class="g-recaptcha" data-sitekey="<?php echo $hesk_settings['recaptcha_public_key']; ?>" data-bind="recaptcha-submit" data-callback="recaptcha_submitForm"></div>
+                            <?php endif; ?>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        <script>
+        $(() => {
+            $('form :visible[class*=isError]:first').focus();
+        })
+        </script>
+	<?php
+	hesk_cleanSessionVars('a_iserror');
+
+    require_once(HESK_PATH . 'inc/footer.inc.php');
+    exit();
+} // End print_login()
 
 
-function print_start()
-{
+function logout() {
 	global $hesk_settings, $hesklang;
 
-    // Connect to database
-    hesk_load_database_functions();
-    hesk_dbConnect();
-
-    // Include KB functionality only if we have any public articles
-
-    $top_articles = array();
-    $latest_articles = array();
-    has_public_kb();
-    if ($hesk_settings['kb_enable'])
+    if ( ! hesk_token_check('GET', 0))
     {
-        require(HESK_PATH . 'inc/knowledgebase_functions.inc.php');
-
-        /* Get list of top articles */
-        $top_articles = hesk_kbTopArticles($hesk_settings['kb_index_popart']);
-
-        /* Get list of latest articles */
-        $latest_articles = hesk_kbLatestArticles($hesk_settings['kb_index_latest']);
+		print_login();
+        exit();
     }
 
-    // Service Messages
-    $res = hesk_dbQuery('SELECT `title`, `message`, `style` FROM `'.hesk_dbEscape($hesk_settings['db_pfix'])."service_messages` WHERE `type`='0' AND (`language` IS NULL OR `language` LIKE '".hesk_dbEscape($hesk_settings['language'])."') ORDER BY `order` ASC");
-    $service_messages = array();
-    while ($sm=hesk_dbFetchAssoc($res))
+    /* Delete from Who's online database */
+	if ($hesk_settings['online'])
+	{
+    	require(HESK_PATH . 'inc/users_online.inc.php');
+		hesk_setOffline($_SESSION['id']);
+	}
+    /* Destroy session and cookies */
+	hesk_session_stop();
+
+    /* If we're using the security image for admin login start a new session */
+	if ($hesk_settings['secimg_use'] == 2)
     {
-        $service_messages[] = $sm;
+    	hesk_session_start();
     }
 
-    $hesk_settings['render_template'](TEMPLATE_PATH . 'customer/index.php', array(
-        'top_articles' => $top_articles,
-        'latest_articles' => $latest_articles,
-        'service_messages' => $service_messages
-    ));
-} // End print_start()
+	/* Show success message and reset the cookie */
+    hesk_process_messages($hesklang['logout_success'],'NOREDIRECT','SUCCESS');
+    hesk_setcookie('hesk_p', '');
 
-
-function forgot_tid()
-{
-	global $hesk_settings, $hesklang;
-
-	require(HESK_PATH . 'inc/email_functions.inc.php');
-
-	$email = hesk_emailCleanup( hesk_validateEmail( hesk_POST('email'), 'ERR' ,0) ) or hesk_process_messages($hesklang['enter_valid_email'],'ticket.php?remind=1');
-
-	if ( isset($_POST['open_only']) )
-	{
-    	$hesk_settings['open_only'] = $_POST['open_only'] == 1 ? 1 : 0;
-	}
-
-	/* Get ticket(s) from database */
-	hesk_load_database_functions();
-	hesk_dbConnect();
-
-    // Get tickets from the database
-	$res = hesk_dbQuery('SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` FORCE KEY (`statuses`) WHERE ' . ($hesk_settings['open_only'] ? "`status` IN ('0','1','2','4','5') AND " : '') . ' ' . hesk_dbFormatEmail($email) . ' ORDER BY `status` ASC, `lastchange` DESC ');
-
-	$num = hesk_dbNumRows($res);
-	if ($num < 1)
-	{
-		if ($hesk_settings['open_only'])
-        {
-            hesk_process_messages($hesklang['noopen'],'ticket.php?remind=1&e='.rawurlencode($email).(hesk_POST('forgot') ? '&forgot=1#forgot-modal' : ''));
-        }
-        else
-        {
-            hesk_process_messages($hesklang['tid_not_found'],'ticket.php?remind=1&e='.rawurlencode($email).(hesk_POST('forgot') ? '&forgot=1#forgot-modal' : ''));
-        }
-	}
-
-	$tid_list = '';
-	$name = '';
-
-    $email_param = $hesk_settings['email_view_ticket'] ? '&e='.rawurlencode($email) : '';
-
-	while ($my_ticket=hesk_dbFetchAssoc($res))
-	{
-		$name = $name ? $name : hesk_msgToPlain($my_ticket['name'], 1, 0);
-$tid_list .= "
-$hesklang[trackID]: "	. $my_ticket['trackid'] . "
-$hesklang[subject]: "	. hesk_msgToPlain($my_ticket['subject'], 1, 0) . "
-$hesklang[status]: "	. hesk_get_status_name($my_ticket['status']) . "
-$hesk_settings[hesk_url]/ticket.php?track={$my_ticket['trackid']}{$email_param}
-";
-	}
-
-	/* Get e-mail message for customer */
-	$msg = hesk_getEmailMessage('forgot_ticket_id','',0,0,1);
-	$msg = str_replace('%%NAME%%',			$name,												$msg);
-	$msg = str_replace('%%NUM%%',			$num,												$msg);
-	$msg = str_replace('%%LIST_TICKETS%%',	$tid_list,											$msg);
-	$msg = str_replace('%%SITE_TITLE%%',	hesk_msgToPlain($hesk_settings['site_title'], 1),	$msg);
-	$msg = str_replace('%%SITE_URL%%',		$hesk_settings['site_url'],							$msg);
-
-    $subject = hesk_getEmailSubject('forgot_ticket_id');
-
-	/* Send e-mail */
-	hesk_mail($email, $subject, $msg);
-
-	/* Show success message */
-	$tmp  = '<b>'.$hesklang['tid_sent'].'!</b>';
-	$tmp .= '<br />&nbsp;<br />'.$hesklang['tid_sent2'].'.';
-	$tmp .= '<br />&nbsp;<br />'.$hesklang['check_spambox'];
-	hesk_process_messages($tmp,'ticket.php?e='.$email,'SUCCESS');
+    /* Print the login form */
+	print_login();
 	exit();
+} // End logout()
 
-} // End forgot_tid()
-
-
-function has_public_kb($use_cache=1)
-{
-    global $hesk_settings;
-
-    // Return if KB is disabled
-    if ( ! $hesk_settings['kb_enable'])
-    {
-        return 0;
-    }
-
-    // Do we have a cached version available
-    $cache_dir = $hesk_settings['cache_dir'].'/';
-    $cache_file = $cache_dir . 'kb.cache.php';
-
-    if ($use_cache && file_exists($cache_file))
-    {
-        require($cache_file);
-        return $hesk_settings['kb_enable'];
-    }
-
-    // Make sure we have database connection
-    hesk_load_database_functions();
-    hesk_dbConnect();
-
-    // Do we have any public articles at all?
-    $res = hesk_dbQuery("SELECT `t1`.`id` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_articles` AS `t1`
-                        LEFT JOIN `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_categories` AS `t2` ON `t1`.`catid` = `t2`.`id`
-                        WHERE `t1`.`type`='0' AND `t2`.`type`='0' LIMIT 1");
-
-    // If no public articles, disable the KB functionality
-    if (hesk_dbNumRows($res) < 1)
-    {
-        $hesk_settings['kb_enable'] = 0;
-    }
-
-    // Try to cache results
-    if ($use_cache && (is_dir($cache_dir) || ( @mkdir($cache_dir, 0777) && is_writable($cache_dir) ) ) )
-    {
-        // Is there an index.htm file?
-        if ( ! file_exists($cache_dir.'index.htm'))
-        {
-            @file_put_contents($cache_dir.'index.htm', '');
-        }
-
-        // Write data
-        @file_put_contents($cache_file, '<?php if (!defined(\'IN_SCRIPT\')) {die();} $hesk_settings[\'kb_enable\']=' . $hesk_settings['kb_enable'] . ';' );
-    }
-
-    return $hesk_settings['kb_enable'];
-
-} // End has_public_kb()
+?>
