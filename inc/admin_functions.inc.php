@@ -620,8 +620,31 @@ function hesk_isLoggedIn()
 
 function hesk_verifyGoto()
 {
+
+	global $hesk_settings;
+
 	// Default redirect URL
-	$url_default = 'admin/admin_main.php';
+
+	// Finding the rol of the user...
+	$resultado = hesk_dbQuery("SELECT `rol` FROM hesk_users WHERE `id`='".intval($_SESSION['id'])."' ");
+	$row = hesk_dbFetchAssoc($resultado);
+	/* if ($row['rol'] == 2) {
+		$url_default = 'custo.php';
+	}else{
+		$url_default = 'admin/admin_main.php';
+	} */
+
+	// Redirecting rol depending...
+
+	switch($row['rol']){
+		case 1:
+			$url_default = 'admin/admin_main.php';
+			break;
+		case 2:
+			$url_default = 'custo.php';
+			break;
+	}
+	
 
 	// If no "goto" parameter is set, redirect to the default page
 	if ( ! hesk_isREQUEST('goto') )

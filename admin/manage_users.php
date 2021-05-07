@@ -660,7 +660,8 @@ function new_user()
 	`notify_reply_my`,
 	`notify_assigned`,
 	`notify_pm`,
-	`notify_note`
+	`notify_note`,
+    `rol`
 	) VALUES (
 	'".hesk_dbEscape($myuser['user'])."',
 	'".hesk_dbEscape($myuser['pass'])."',
@@ -685,7 +686,8 @@ function new_user()
 	'".($myuser['notify_reply_my'])."' ,
 	'".($myuser['notify_assigned'])."' ,
 	'".($myuser['notify_pm'])."',
-	'".($myuser['notify_note'])."'
+	'".($myuser['notify_note'])."',
+    '".($myuser['rolU'])."'
 	)" );
 
     $_SESSION['seluser'] = hesk_dbInsertID();
@@ -813,6 +815,13 @@ function hesk_validateUserInfo($pass_required = 1, $redirect_to = './manage_user
     } else {
         $hesk_error_buffer .= '<li>' . $hesklang['enter_username'] . '</li>';
         $errors[] = 'user';
+    }
+
+    if (hesk_input( hesk_POST('rolU') )) {
+        $myuser['rolU'] = hesk_input(hesk_POST('rolU'));
+    } else {
+        $hesk_error_buffer .= '<li>' . $hesklang['enter_rolU'] . '</li>';
+        $errors[] = 'rolU';
     }
 
 	$myuser['isadmin']	  = empty($_POST['isadmin']) ? 0 : 1;

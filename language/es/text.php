@@ -230,6 +230,8 @@ $hesklang['new_ticket_submitted']='Nuevo ticket de soporte ha sido creado';
 $hesklang['user_profile_updated_success']='Este perfil de usuario ha sido actualizado satisfactoriamente';
 $hesklang['printer_friendly']='Versi&oacute;n para imprimir';
 $hesklang['end_ticket']='--- Fin del ticket ---';
+$hesklang['user_rolU']='Rol de usuario';
+$hesklang['enter_rolU']='Digita el rol del usuario';
 
 // CUSTOMER INTERFACE
 $hesklang['your_ticket_been']='Su ticket ha sido';
