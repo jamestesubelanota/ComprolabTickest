@@ -82,6 +82,7 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
             </div>
         </div>
         <div class="main__content">
+            
             <div class="contr">
                 <div class="main__content notice-flash">
                     <div class="notification green">

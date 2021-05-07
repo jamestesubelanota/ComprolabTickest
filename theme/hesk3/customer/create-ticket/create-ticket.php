@@ -52,7 +52,9 @@ require_once(TEMPLATE_PATH . 'customer/util/custom-fields.php');
     <main class="main">
         <header class="header">
             <div class="contr">
+                
                 <div class="header__inner">
+                    
                     <a href="<?php echo $hesk_settings['hesk_url']; ?>" class="header__logo">
                         <?php echo $hesk_settings['hesk_title']; ?>
                     </a>

@@ -39,7 +39,9 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
     <main class="main">
         <header class="header">
             <div class="contr">
+                
                 <div class="header__inner">
+                    
                     <a href="<?php echo $hesk_settings['hesk_url']; ?>" class="header__logo">
                         <?php echo $hesk_settings['hesk_title']; ?>
                     </a>
@@ -81,11 +83,18 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
             </div>
         </div>
         <div class="main__content">
+
+
             <div class="contr">
                 <div style="margin-bottom: 20px;">
                     <?php
                     hesk3_show_messages($messages);
                     ?>
+                </div>
+                <div class="centrado">
+                    <a href="index.php" class="navbar__logo">
+                        <?php  echo $hesklang['help_desk'] ?>
+                    </a>
                 </div>
                 <h2 class="select__title"><?php echo $hesklang['select_category_text']; ?></h2>
                 <?php

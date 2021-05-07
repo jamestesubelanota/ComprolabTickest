@@ -94,115 +94,76 @@ require_once(TEMPLATE_PATH . 'customer/util/rating.php');
             </div>
         </div>
         <div class="main__content">
-            <div class="contr">
-                <div class="help-search">
-                    <h2 class="search__title"><?php echo $hesklang['how_can_we_help']; ?></h2>
-                    <?php displayKbSearch(); ?>
-                </div>
-                <?php hesk3_show_messages($service_messages); ?>
-                <div class="nav">
-                    <a href="custo.php?a=add" class="navlink">
-                        <div class="icon-in-circle">
-                            <svg class="icon icon-submit-ticket">
-                                <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-submit-ticket"></use>
-                            </svg>
-                        </div>
-                        <div>
-                            <h5 class="navlink__title"><?php echo $hesklang['submit_ticket']; ?></h5>
-                            <div class="navlink__descr"><?php echo $hesklang['open_ticket']; ?></div>
-                        </div>
-                    </a>
-                    <a href="ticket.php" class="navlink">
-                        <div class="icon-in-circle">
-                            <svg class="icon icon-document">
-                                <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-document"></use>
-                            </svg>
-                        </div>
-                        <div>
-                            <h5 class="navlink__title"><?php echo $hesklang['view_existing_tickets']; ?></h5>
-                            <div class="navlink__descr"><?php echo $hesklang['vet']; ?></div>
-                        </div>
-                    </a>
-                </div>
-                <?php if ($hesk_settings['kb_enable']): ?>
-                <article class="article">
-                    <h3 class="article__heading">
-                        <a href="knowledgebase.php">
+            <div class="fondoGif">
+                <div class="contr">
+                    <div class="help-search">
+                    <div class="centrado">
+                        <a href="index.php" class="navbar__logo">
+                            <?php  echo $hesklang['help_desk'] ?>
+                        </a>
+                    </div>
+                        <h2 class="search__title"><?php echo $hesklang['how_can_we_help']; ?></h2>
+                        <?php displayKbSearch(); ?>
+                    </div>
+                    <?php hesk3_show_messages($service_messages); ?>
+                    <div class="nav">
+                        <a href="custo.php?a=add" class="navlink">
                             <div class="icon-in-circle">
-                                <svg class="icon icon-knowledge">
-                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-knowledge"></use>
+                                <svg class="icon icon-submit-ticket">
+                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-submit-ticket"></use>
                                 </svg>
                             </div>
-                            <span><?php echo $hesklang['kb_text']; ?></span>
+                            <div>
+                                <h5 class="navlink__title"><?php echo $hesklang['submit_ticket']; ?></h5>
+                                <div class="navlink__descr"><?php echo $hesklang['open_ticket']; ?></div>
+                            </div>
                         </a>
-                    </h3>
-                    <div class="tabbed__head">
-                        <ul class="tabbed__head_tabs">
-                            <?php
-                            if (count($top_articles) > 0):
-                            ?>
-                            <li class="current" data-link="tab1">
-                                <span><?php echo $hesklang['popart']; ?></span>
-                            </li>
-                            <?php
-                            endif;
-                            if (count($latest_articles) > 0):
-                            ?>
-                            <li data-link="tab2">
-                                <span><?php echo $hesklang['latart']; ?></span>
-                            </li>
-                            <?php endif; ?>
-                        </ul>
+                        <a href="ticket.php" class="navlink">
+                            <div class="icon-in-circle">
+                                <svg class="icon icon-document">
+                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-document"></use>
+                                </svg>
+                            </div>
+                            <div>
+                                <h5 class="navlink__title"><?php echo $hesklang['view_existing_tickets']; ?></h5>
+                                <div class="navlink__descr"><?php echo $hesklang['vet']; ?></div>
+                            </div>
+                        </a>
                     </div>
-                    <div class="tabbed__tabs">
-                        <?php if (count($top_articles) > 0): ?>
-                        <div class="tabbed__tabs_tab is-visible" data-tab="tab1">
-                            <?php foreach ($top_articles as $article): ?>
-                            <a href="knowledgebase.php?article=<?php echo $article['id']; ?>" class="preview">
+                    <?php if ($hesk_settings['kb_enable']): ?>
+                    <article class="article">
+                        <h3 class="article__heading">
+                            <a href="knowledgebase.php">
                                 <div class="icon-in-circle">
                                     <svg class="icon icon-knowledge">
                                         <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-knowledge"></use>
                                     </svg>
                                 </div>
-                                <div class="preview__text">
-                                    <h5 class="preview__title"><?php echo $article['subject'] ?></h5>
-                                    <p>
-                                        <span class="lightgrey"><?php echo $hesklang['kb_cat']; ?>:</span>
-                                        <span class="ml-1"><?php echo $article['category']; ?></span>
-                                    </p>
-                                    <p class="navlink__descr">
-                                        <?php echo $article['content_preview']; ?>
-                                    </p>
-                                </div>
-                                <?php if ($hesk_settings['kb_views'] || $hesk_settings['kb_rating']): ?>
-                                    <div class="rate">
-                                        <?php if ($hesk_settings['kb_views']): ?>
-                                            <div style="margin-right: 10px; display: -ms-flexbox; display: flex;">
-                                                <svg class="icon icon-eye-close">
-                                                    <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-eye-close"></use>
-                                                </svg>
-                                                <span class="lightgrey"><?php echo $article['views_formatted']; ?></span>
-                                            </div>
-                                        <?php
-                                        endif;
-                                        if ($hesk_settings['kb_rating']): ?>
-                                            <?php echo hesk3_get_customer_rating($article['rating']); ?>
-                                            <?php if ($hesk_settings['kb_views']) echo '<span class="lightgrey">('.$article['votes_formatted'].')</span>'; ?>
-                                        <?php endif; ?>
-                                    </div>
-                                <?php endif; ?>
+                                <span><?php echo $hesklang['kb_text']; ?></span>
                             </a>
-                            <!--[if IE]>
-                                <p>&nbsp;</p>
-                            <![endif]-->
-                            <?php endforeach; ?>
+                        </h3>
+                        <div class="tabbed__head">
+                            <ul class="tabbed__head_tabs">
+                                <?php
+                                if (count($top_articles) > 0):
+                                ?>
+                                <li class="current" data-link="tab1">
+                                    <span><?php echo $hesklang['popart']; ?></span>
+                                </li>
+                                <?php
+                                endif;
+                                if (count($latest_articles) > 0):
+                                ?>
+                                <li data-link="tab2">
+                                    <span><?php echo $hesklang['latart']; ?></span>
+                                </li>
+                                <?php endif; ?>
+                            </ul>
                         </div>
-                        <?php
-                        endif;
-                        if (count($latest_articles) > 0):
-                        ?>
-                        <div class="tabbed__tabs_tab <?php echo count($top_articles) === 0 ? 'is-visible' : ''; ?>" data-tab="tab2">
-                            <?php foreach ($latest_articles as $article): ?>
+                        <div class="tabbed__tabs">
+                            <?php if (count($top_articles) > 0): ?>
+                            <div class="tabbed__tabs_tab is-visible" data-tab="tab1">
+                                <?php foreach ($top_articles as $article): ?>
                                 <a href="knowledgebase.php?article=<?php echo $article['id']; ?>" class="preview">
                                     <div class="icon-in-circle">
                                         <svg class="icon icon-knowledge">
@@ -240,22 +201,68 @@ require_once(TEMPLATE_PATH . 'customer/util/rating.php');
                                 <!--[if IE]>
                                     <p>&nbsp;</p>
                                 <![endif]-->
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            </div>
+                            <?php
+                            endif;
+                            if (count($latest_articles) > 0):
+                            ?>
+                            <div class="tabbed__tabs_tab <?php echo count($top_articles) === 0 ? 'is-visible' : ''; ?>" data-tab="tab2">
+                                <?php foreach ($latest_articles as $article): ?>
+                                    <a href="knowledgebase.php?article=<?php echo $article['id']; ?>" class="preview">
+                                        <div class="icon-in-circle">
+                                            <svg class="icon icon-knowledge">
+                                                <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-knowledge"></use>
+                                            </svg>
+                                        </div>
+                                        <div class="preview__text">
+                                            <h5 class="preview__title"><?php echo $article['subject'] ?></h5>
+                                            <p>
+                                                <span class="lightgrey"><?php echo $hesklang['kb_cat']; ?>:</span>
+                                                <span class="ml-1"><?php echo $article['category']; ?></span>
+                                            </p>
+                                            <p class="navlink__descr">
+                                                <?php echo $article['content_preview']; ?>
+                                            </p>
+                                        </div>
+                                        <?php if ($hesk_settings['kb_views'] || $hesk_settings['kb_rating']): ?>
+                                            <div class="rate">
+                                                <?php if ($hesk_settings['kb_views']): ?>
+                                                    <div style="margin-right: 10px; display: -ms-flexbox; display: flex;">
+                                                        <svg class="icon icon-eye-close">
+                                                            <use xlink:href="<?php echo TEMPLATE_PATH; ?>customer/img/sprite.svg#icon-eye-close"></use>
+                                                        </svg>
+                                                        <span class="lightgrey"><?php echo $article['views_formatted']; ?></span>
+                                                    </div>
+                                                <?php
+                                                endif;
+                                                if ($hesk_settings['kb_rating']): ?>
+                                                    <?php echo hesk3_get_customer_rating($article['rating']); ?>
+                                                    <?php if ($hesk_settings['kb_views']) echo '<span class="lightgrey">('.$article['votes_formatted'].')</span>'; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </a>
+                                    <!--[if IE]>
+                                        <p>&nbsp;</p>
+                                    <![endif]-->
+                                <?php endforeach; ?>
+                            </div>
+                            <?php endif; ?>
                         </div>
-                        <?php endif; ?>
-                    </div>
+                        <div class="article__footer">
+                            <a href="knowledgebase.php" class="btn btn--blue-border" ripple="ripple"><?php echo $hesklang['viewkb']; ?></a>
+                        </div>
+                    </article>
+                    <?php
+                    endif;
+                    if ($hesk_settings['alink']):
+                    ?>
                     <div class="article__footer">
-                        <a href="knowledgebase.php" class="btn btn--blue-border" ripple="ripple"><?php echo $hesklang['viewkb']; ?></a>
+                    
                     </div>
-                </article>
-                <?php
-                endif;
-                if ($hesk_settings['alink']):
-                ?>
-                <div class="article__footer">
-                    <a href="<?php echo $hesk_settings['admin_dir']; ?>/" class="link"><?php echo $hesklang['ap']; ?></a>
+                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
             </div>
         </div>
 <?php

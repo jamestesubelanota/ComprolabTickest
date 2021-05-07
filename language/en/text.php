@@ -1628,7 +1628,7 @@ $hesklang['view_existing']='View existing ticket';
 $hesklang['popart']='Top articles';
 $hesklang['latart']='Latest articles';
 $hesklang['sub_ticket']='Submit Ticket';
-$hesklang['how_can_we_help'] = 'Hello, how can we help?';
+$hesklang['how_can_we_help'] = 'Literal maintenance and support system, <br> how we can help you';
 $hesklang['search_for_articles'] = 'Search for articles';
 $hesklang['submit_a_support_request'] = 'Submit a Support Request';
 $hesklang['maximum_x_attachments'] = 'Maximum %s attachments'; // %s = max number of attachments (specified in settings)
