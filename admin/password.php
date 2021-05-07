@@ -314,7 +314,7 @@ $login_wrapper = true;
                     </form>
                 <?php endif; ?>
                 <div class="reg__footer">
-                    <a href="index.php" class="link"><?php echo $hesklang['back_to_login']; ?></a>
+                    <a href="../index.php" class="link"><?php echo $hesklang['back_to_login']; ?></a>
                 </div>
             </div>
         </div>

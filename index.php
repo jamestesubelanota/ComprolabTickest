@@ -436,7 +436,7 @@ function print_login()
                             </div>
                             <?php if ($hesk_settings['reset_pass']): ?>
                                 <div class="reg__footer">
-                                    <a href="password.php" class="link"><?php echo $hesklang['fpass']; ?></a>
+                                    <a href="admin/password.php" class="link"><?php echo $hesklang['fpass']; ?></a>
                                 </div>
                             <?php
                             endif;
@@ -458,7 +458,6 @@ function print_login()
 	<?php
 	hesk_cleanSessionVars('a_iserror');
 
-    require_once(HESK_PATH . 'inc/footer.inc.php');
     exit();
 } // End print_login()
 

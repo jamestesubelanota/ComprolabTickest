@@ -2915,7 +2915,7 @@ input::-ms-clear {
     display: -ms-flexbox;
     display: flex;
     min-height: 100vh;
-    background-image: url(../img/Comprolab\ -\ Imagen\ Corporativa.jpeg);
+    background-image: url(../img/Comprolab\ -\ Imagen\ Corporativa.jpeg);    
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -2976,7 +2976,7 @@ input::-ms-clear {
     background-color: rgba(255, 255, 255, 0.6);
 }
 .reg__box {
-    height: 80%;
+    height: 60%;
     width: 100%;
     max-width: 320px;
     margin: 0 auto

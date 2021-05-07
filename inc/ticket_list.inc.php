@@ -17,7 +17,7 @@ if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
 // List of staff and check their permissions
 $admins = array();
 $can_assign_to = array();
-$res2 = hesk_dbQuery("SELECT `id`,`name`,`isadmin`,`heskprivileges` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` ORDER BY `name` ASC");
+$res2 = hesk_dbQuery("SELECT `id`,`name`,`isadmin`,`heskprivileges`,`rol` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` WHERE `rol`=1 ORDER BY `name` ASC");
 while ($row = hesk_dbFetchAssoc($res2))
 {
     $admins[$row['id']] = $row['name'];
