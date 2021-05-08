@@ -202,12 +202,7 @@ require(TEMPLATE_PATH . 'customer/view-ticket/partial/add-reply.php');
                                     <div class="title"><?php echo $hesklang['ticket_status']; ?>:</div>
                                     <div class="value"><?php echo hesk_get_ticket_status($ticket['status']); ?></div>
                                 </div>
-                                <?php if (strlen($status_action)): ?>
-                                <div class="row">
-                                    <div class="title">&nbsp;</div>
-                                    <div class="value center"><?php echo $status_action; ?></div>
-                                </div>
-                                <?php endif; ?>
+                               
                                 <div class="row">
                                     <div class="title"><?php echo $hesklang['created_on']; ?>:</div>
                                     <div class="value"><?php echo hesk_date($ticket['dt'], true); ?></div>
