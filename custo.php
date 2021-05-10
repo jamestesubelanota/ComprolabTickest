@@ -374,6 +374,11 @@ function print_start()
     // Connect to database
     hesk_load_database_functions();
     hesk_dbConnect();
+    
+    require(HESK_PATH . 'inc/admin_functions.inc.php');
+
+    hesk_session_start();
+    hesk_isLoggedIn();
 
     // Include KB functionality only if we have any public articles
 

@@ -7,6 +7,10 @@ if (!defined('IN_SCRIPT')) {
 }
 
 require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
+require(HESK_PATH . 'inc/admin_functions.inc.php');
+
+    hesk_session_start();
+    hesk_isLoggedIn();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,6 +64,12 @@ require_once(TEMPLATE_PATH . 'customer/util/alerts.php');
                             </form>
                         </div>
                     <?php endif; ?>
+                    <a href="index.php?a=logout&token=<?php hesk_token_echo(); ?>" class="profile-log-out">
+                <svg class="icon icon-log-out">
+                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-log-out"></use>
+                </svg>
+                <span><?php echo $hesklang['logout']; ?></span>
+            </a>
                 </div>
             </div>
         </header>
