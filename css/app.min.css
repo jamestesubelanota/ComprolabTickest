@@ -8517,7 +8517,7 @@ p.rate {
 }
 @media screen and (min-width: 900px) {
     .main-menu.is-toggled .navbar__toggler {
-        color: #fff;
+        color: black;
         -ms-transform: scaleX(-1);
         transform: scaleX(-1);
         filter: FlipH;
@@ -8577,7 +8577,7 @@ p.rate {
     align-items: center;
     height: 115px;
     padding: 17px 0;
-    background-color: white;
+    background-color: #d2d2d2;
 }
 @media screen and (max-width: 900px) {
     .navbar__header {
@@ -8588,7 +8588,7 @@ p.rate {
     width: 72px;
     -ms-flex-negative: 0;
     flex-shrink: 0;
-    color: rgba(255, 255, 255, 0.55)
+    color: rgba(0, 0, 0, 0.55)
 }
 .navbar__toggler .icon {
     width: 24px;
@@ -8596,7 +8596,7 @@ p.rate {
     cursor: pointer
 }
 .navbar__toggler .icon:hover {
-    color: #fff
+    color: black
 }
 .navbar__logo {
     font-size: 24px;
