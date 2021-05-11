@@ -1584,7 +1584,7 @@ $hesklang['btn_export']='Exportar a XML para Excel';
 $hesklang['recaptcha']='reCAPTCHA';
 
 // Added in version 3.0.0
-$hesklang['team']='Equipo';
+$hesklang['team']='Usuarios';
 $hesklang['sm_content']='Contenido';
 $hesklang['sm_settings']='Configuración';
 $hesklang['wizard_back']='Atrás'; // Create/Edit sidebar button to go back a step

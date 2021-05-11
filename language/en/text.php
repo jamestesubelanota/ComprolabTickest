@@ -1551,7 +1551,7 @@ $hesklang['recaptcha']='reCAPTCHA';
 
 // Added or modified in HESK 3.0.0
 $hesklang['responses']='Responses';
-$hesklang['team']='Team';
+$hesklang['team']='Users';
 $hesklang['banemail']='Ban Emails';
 $hesklang['sm_title']='Service Messages';
 $hesklang['et_title']='Email Templates';
