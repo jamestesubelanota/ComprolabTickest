@@ -586,7 +586,7 @@ while ($row=hesk_dbFetchAssoc($result))
 
 /* List of users */
 $admins = array();
-$result = hesk_dbQuery("SELECT `id`,`name`,`isadmin`,`categories`,`heskprivileges` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` ORDER BY `name` ASC");
+$result = hesk_dbQuery("SELECT `id`,`name`,`isadmin`,`categories`,`heskprivileges` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` WHERE rol=1 ORDER BY `name` ASC");
 while ($row=hesk_dbFetchAssoc($result))
 {
 	/* Is this an administrator? */

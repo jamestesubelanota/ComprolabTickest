@@ -76,8 +76,12 @@ function hesk_profile_tab($session_array='new',$is_profile_page=true)
             ?>
             <div class="form-group">
                 <label for="rolU"><?php echo $hesklang['user_rolU']; ?></label>
-                <input type="text" class="form-control " name="rolU" autocomplete="off" id="rolU" maxlength="2"
-                        value="<?php echo $_SESSION[$session_array]['rol']; ?>">
+                <select class="form-control" style="height: 40px; border-radius: 50px; border-color: black;" name="rolU" id="prof_user">
+                    <option value="1">Personal tecnico</option>
+                    <option value="2">Cliente</option>
+                </select>
+                <!-- <input type="text" class="form-control " name="rolU" autocomplete="off" id="rolU" maxlength="2"
+                        value="<?php echo $_SESSION[$session_array]['rol']; ?>">-->
             </div>
             <section class="item--section">
                 <h4>
