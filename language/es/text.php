@@ -1667,7 +1667,7 @@ $hesklang['first_day_of_week']='1'; // first day of week; 0 = Sunday, 1 = Monday
 $hesklang['modules']='Modulos';
 $hesklang['modules_demo']='Este módulo está disponible actualmente sólo en %s'; // %s = Hesk cloud link
 $hesklang['see_demo']='Prueba la demostración en vivo aquí: %s'; // %s = Hesk demo link
-$hesklang['statistics']['tab']='Stadísticas';
+$hesklang['statistics']['tab']='Estadísticas';
 $hesklang['statistics']['intro']='Este informe le dará una idea de su uso del " soporte técnico " y del rendimiento del personal.';
 $hesklang['statistics']['ntsp']='No hay billetes en el período de tiempo seleccionado.';
 $hesklang['statistics']['pie_title_ro']='Tickets abiertos vs. Resueltos';

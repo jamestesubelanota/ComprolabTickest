@@ -256,7 +256,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                     $pages = array('module_statistics', 'module_escalate');
                     $open_menu = in_array($calling_script, $pages) ? 'current submenu-is-opened' : '';
                 ?>
-                <li class="listitem submenu <?php echo $open_menu; ?>">
+                <!-- <li class="listitem submenu <?php echo $open_menu; ?>">
                     <div class="listitem__icon">
                         <a href="#">
                             <svg class="icon icon-modules">
@@ -291,7 +291,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             ?>
                         </ul>
                     </div>
-                </li>
+                </li> -->
                 <?php
                 }
 
