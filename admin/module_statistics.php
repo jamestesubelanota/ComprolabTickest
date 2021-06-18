@@ -73,81 +73,85 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
 	?>
 
-
-	<div class="row" style="width: 300px; height: auto;">
-		<canvas id="myChart"></canvas>
-		<div class="card" style="width: 18rem;">
-		<div class="card-body">
-			<h2 class="card-title">Total de tickets</h5>
-			<h3 class="card-text">
-				<?php 
-					$conn = new mysqli('localhost', 'root', '', 'helpdesk', '3306');
-					if ($conn->connect_errno) {
-						echo "Error en la conexión de bases de datos: " . $conn->connect_errno;
-					}
-
-					$sql = "SELECT count(id) as total FROM `hesk_tickets`";
-
-					$res = $conn->query($sql); 
-
-					$reg = $res->fetch_assoc();
-					
-					echo $reg['total'];
-				?>
-			</h3>
-			<a href="show_tickets.php" class="btn btn-primary">Ver tickets</a>
+	<div style="display: flex; justify-content: space-around;">
+		<div style="width: 300px; height: auto; float: left;">
+			<canvas id="myChart"></canvas>
 		</div>
-	</div>
-	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.js"></script>
-	<script>
-		var ctx = document.getElementById('myChart').getContext('2d');
-		var chart = new Chart(ctx, {
-			type: 'bar',
-			data: {
-				datasets: [{
-					data: [
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.js"></script>
+		<script>
+			var ctx = document.getElementById('myChart').getContext('2d');
+			var chart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+					datasets: [{
+						data: [
+							<?php
+							while ($reg = $res->fetch_assoc()) {
+							?> '<?php echo $reg['cantidad']; ?>',
+							<?php
+							}
+							$conn->close();
+							?>
+						],
+						backgroundColor: ['#42a5f5', 'red', 'green', 'blue', 'violet'],
+						label: 'Cantidad de tickets contra estados'
+					}],
+					labels: [
+
+						<?php
+						$conn = new mysqli('localhost', 'root', '', 'helpdesk', '3306');
+						if ($conn->connect_errno) {
+							echo "Error en la conexión de bases de datos: " . $conn->connect_errno;
+						}
+
+						$res = $conn->query($sql);
+
+						?>
+
 						<?php
 						while ($reg = $res->fetch_assoc()) {
-						?> '<?php echo $reg['cantidad']; ?>',
+						?> '<?php echo $reg['estado']; ?>',
 						<?php
 						}
 						$conn->close();
 						?>
-					],
-					backgroundColor: ['#42a5f5', 'red', 'green', 'blue', 'violet'],
-					label: 'Cantidad de tickets contra estados'
-				}],
-				labels: [
+					]
+				},
+				options: {
+					responsive: true
+				}
+			});
+		</script>
 
-					<?php
-					$conn = new mysqli('localhost', 'root', '', 'helpdesk', '3306');
-					if ($conn->connect_errno) {
-						echo "Error en la conexión de bases de datos: " . $conn->connect_errno;
-					}
+		<div class="card" style="width: 18rem;">
+			<div class="card-body">
+				<h2 class="card-title">Total de tickets</h5>
+					<h3 class="card-text">
+						<?php
+						$conn = new mysqli('localhost', 'root', '', 'helpdesk', '3306');
+						if ($conn->connect_errno) {
+							echo "Error en la conexión de bases de datos: " . $conn->connect_errno;
+						}
 
-					$res = $conn->query($sql);
+						$sql = "SELECT count(id) as total FROM `hesk_tickets`";
 
-					?>
+						$res = $conn->query($sql);
 
-					<?php
-					while ($reg = $res->fetch_assoc()) {
-					?> '<?php echo $reg['estado']; ?>',
-					<?php
-					}
-					$conn->close();
-					?>
-				]
-			},
-			options: {
-				responsive: true
-			}
-		});
-	</script>
+						$reg = $res->fetch_assoc();
+
+						echo $reg['total'];
+
+						$conn->close();
+						?>
+					</h3>
+					<a href="show_tickets.php" class="btn btn-primary">Ver tickets</a>
+			</div>
+		</div>
+	</div>
 
 	<!-- / . Grafico de dona . / -->
 
-	
+
 
 	<!-- <p><?php echo $hesklang['statistics']['intro']; ?></p>
 
