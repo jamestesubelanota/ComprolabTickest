@@ -16,6 +16,8 @@ if (!defined('IN_SCRIPT')) {die('Invalid attempt');}
 
 // We'll use this later
 $onload='';
+
+include HESK_PATH.'fpdf/fpdf.php';
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $hesk_settings['languages'][$hesk_settings['language']]['folder'] ?>">

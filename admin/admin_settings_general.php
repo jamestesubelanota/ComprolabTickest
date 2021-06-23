@@ -72,7 +72,7 @@ hesk_handle_messages();
 
     <?php require_once(HESK_PATH . 'inc/admin_settings_status.inc.php'); ?>
 
-    <script language="javascript" type="text/javascript"><!--
+    <script language="javascript" type="text/javascript">
         function hesk_checkFields() {
             var d=document.form1;
 
@@ -397,7 +397,7 @@ hesk_handle_messages();
             <div id="mysql_test" style="display:none">
             </div>
 
-            <script language="Javascript" type="text/javascript"><!--
+            <script language="Javascript" type="text/javascript">
                 function hesk_testMySQL()
                 {
                     var element = document.getElementById('mysql_test');
