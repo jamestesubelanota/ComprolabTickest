@@ -144,7 +144,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 						$conn->close();
 						?>
 					</h3>
-					<a href="show_tickets.php" class="btn btn-primary">Ver tickets</a>
+					<a href="show_tickets.php" class="btnb btnb-primary">Ver tickets</a>
 			</div>
 		</div>
 	</div>
