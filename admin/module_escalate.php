@@ -64,7 +64,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
         <li><?php echo $hesklang['and_more']; ?></li>
     </ul>
 
-    <a href="reporte1.php" target="_blank">pdf</a>
+    <a href="reporte1.php" target="_blank">tickets no resueltos en plazo de 3 días</a>
 
 </div>
 

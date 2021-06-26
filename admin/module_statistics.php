@@ -66,7 +66,8 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 		echo "Error en la conexión de bases de datos: " . $conn->connect_errno;
 	}
 
-	$sql = "SELECT count(id) as cantidad, IF (status=0,\"nuevo\",IF(status=3,\"Resuelto\",\" so se encontró\")) as estado
+	$sql = "SELECT count(id) as cantidad, IF (status=0,\"nuevo\",IF(status=3,\"Resuelto\",IF(status=2,\"Respondido\",
+										  IF(status=4,\"En espera\",IF(status=5,\"Esperando respuesta\",IF(status=6,\"En progreso\",\"No se encontró\")))))) as estado
 				FROM `hesk_tickets` GROUP BY `status`";
 
 	$res = $conn->query($sql);
@@ -77,7 +78,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 		<div style="width: 300px; height: auto; float: left;">
 			<canvas id="myChart"></canvas>
 		</div>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.js"></script>
+		<script src="<?php echo HESK_PATH ?>js/chart.js"></script>
 		<script>
 			var ctx = document.getElementById('myChart').getContext('2d');
 			var chart = new Chart(ctx, {
