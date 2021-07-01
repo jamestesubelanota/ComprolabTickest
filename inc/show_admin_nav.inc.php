@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * This file is part of HESK - PHP Help Desk Software.
@@ -12,7 +13,9 @@
  */
 
 /* Check if this is a valid include */
-if (!defined('IN_SCRIPT')) {die('Invalid attempt');} 
+if (!defined('IN_SCRIPT')) {
+    die('Invalid attempt');
+}
 
 $num_mail = hesk_checkNewMail();
 
@@ -46,39 +49,42 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                         <a href="admin_main.php" class="listitem__caption">
                             <?php echo $hesklang['tickets']; ?>
                         </a>
-                        <?php //<span class="badge listitem__notification">109</span> ?>
+                        <?php //<span class="badge listitem__notification">109</span> 
+                        ?>
                     </div>
                 </li>
-                <?php if (hesk_checkPermission('can_man_canned',0) &&
-                          hesk_checkPermission('can_man_ticket_tpl',0)) {
+                <?php if (
+                    hesk_checkPermission('can_man_canned', 0) &&
+                    hesk_checkPermission('can_man_ticket_tpl', 0)
+                ) {
                     $pages = array('manage_canned', 'manage_ticket_templates');
                     $open_menu = in_array($calling_script, $pages) ? 'current submenu-is-opened' : '';
-                    ?>
-                <li class="listitem submenu <?php echo $open_menu; ?>">
-                    <div class="listitem__icon">
-                        <a href="#">
-                            <svg class="icon icon-templates">
-                                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-templates"></use>
-                            </svg>
-                        </a>
-                    </div>
-                    <div class="listitem__menu">
-                        <a href="#" class="listitem__caption"><?php echo $hesklang['nav_templates']; ?></a>
-                        <ul class="submenu__list">
-                            <li class="submenu__listitem <?php if ($calling_script === 'manage_canned') { ?>current<?php } ?>">
-                                <a href="manage_canned.php">
-                                    <?php echo $hesklang['responses']; ?>
-                                </a>
-                            </li>
-                            <li class="submenu__listitem <?php if ($calling_script === 'manage_ticket_templates') { ?>current<?php } ?>">
-                                <a href="manage_ticket_templates.php">
-                                    <?php echo $hesklang['tickets']; ?>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <?php } elseif (hesk_checkPermission('can_man_canned',0)) { ?>
+                ?>
+                    <li class="listitem submenu <?php echo $open_menu; ?>">
+                        <div class="listitem__icon">
+                            <a href="#">
+                                <svg class="icon icon-templates">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-templates"></use>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="listitem__menu">
+                            <a href="#" class="listitem__caption"><?php echo $hesklang['nav_templates']; ?></a>
+                            <ul class="submenu__list">
+                                <li class="submenu__listitem <?php if ($calling_script === 'manage_canned') { ?>current<?php } ?>">
+                                    <a href="manage_canned.php">
+                                        <?php echo $hesklang['responses']; ?>
+                                    </a>
+                                </li>
+                                <li class="submenu__listitem <?php if ($calling_script === 'manage_ticket_templates') { ?>current<?php } ?>">
+                                    <a href="manage_ticket_templates.php">
+                                        <?php echo $hesklang['tickets']; ?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                <?php } elseif (hesk_checkPermission('can_man_canned', 0)) { ?>
                     <li class="listitem <?php if ($calling_script === 'manage_canned') { ?>current<?php } ?>">
                         <div class="listitem__icon">
                             <a href="manage_canned.php">
@@ -93,7 +99,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             </a>
                         </div>
                     </li>
-                <?php } elseif (hesk_checkPermission('can_man_ticket_tpl',0)) { ?>
+                <?php } elseif (hesk_checkPermission('can_man_ticket_tpl', 0)) { ?>
                     <li class="listitem <?php if ($calling_script === 'manage_ticket_templates') { ?>current<?php } ?>">
                         <div class="listitem__icon">
                             <a href="manage_ticket_templates.php">
@@ -111,10 +117,10 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                 <?php
                 }
 
-                if ($hesk_settings['kb_enable'] && hesk_checkPermission('can_man_kb',0)) {
+                if ($hesk_settings['kb_enable'] && hesk_checkPermission('can_man_kb', 0)) {
                     $pages = array('manage_knowledgebase', 'knowledgebase_private');
                     $open_menu = in_array($calling_script, $pages) ? 'current submenu-is-opened' : '';
-                    ?>
+                ?>
                     <li class="listitem submenu <?php echo $open_menu; ?>">
                         <div class="listitem__icon">
                             <a href="manage_knowledgebase.php">
@@ -139,9 +145,9 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             </ul>
                         </div>
                     </li>
-                    <?php
+                <?php
                 } elseif ($hesk_settings['kb_enable']) {
-                    ?>
+                ?>
                     <li class="listitem <?php if ($calling_script === 'knowledgebase_private') { ?>current<?php } ?>">
                         <div class="listitem__icon">
                             <a href="knowledgebase_private.php">
@@ -156,83 +162,83 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             </a>
                         </div>
                     </li>
-                    <?php
+                <?php
                 }
 
-                if (hesk_checkPermission('can_man_cat',0)) { ?>
-                <li class="listitem <?php if ($calling_script === 'manage_categories') { ?>current<?php } ?>">
-                    <div class="listitem__icon">
-                        <a href="manage_categories.php">
-                            <svg class="icon icon-categories">
-                                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-categories"></use>
-                            </svg>
-                        </a>
-                    </div>
-                    <div class="listitem__menu">
-                        <a href="manage_categories.php" class="listitem__caption">
-                            <?php echo $hesklang['menu_cat']; ?>
-                        </a>
-                    </div>
-                </li>
+                if (hesk_checkPermission('can_man_cat', 0)) { ?>
+                    <li class="listitem <?php if ($calling_script === 'manage_categories') { ?>current<?php } ?>">
+                        <div class="listitem__icon">
+                            <a href="manage_categories.php">
+                                <svg class="icon icon-categories">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-categories"></use>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="listitem__menu">
+                            <a href="manage_categories.php" class="listitem__caption">
+                                <?php echo $hesklang['menu_cat']; ?>
+                            </a>
+                        </div>
+                    </li>
                 <?php } ?>
                 <li class="separator"></li>
-                <?php if (hesk_checkPermission('can_man_users',0)) { ?>
-                <li class="listitem <?php if ($calling_script === 'manage_users') { ?>current<?php } ?>">
-                    <div class="listitem__icon">
-                        <a href="manage_users.php">
-                            <svg class="icon icon-team">
-                                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-team"></use>
-                            </svg>
-                        </a>
-                    </div>
-                    <div class="listitem__menu">
-                        <a href="manage_users.php" class="listitem__caption">
-                            <?php echo $hesklang['team']; ?>
-                        </a>
-                    </div>
-                </li>
+                <?php if (hesk_checkPermission('can_man_users', 0)) { ?>
+                    <li class="listitem <?php if ($calling_script === 'manage_users') { ?>current<?php } ?>">
+                        <div class="listitem__icon">
+                            <a href="manage_users.php">
+                                <svg class="icon icon-team">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-team"></use>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="listitem__menu">
+                            <a href="manage_users.php" class="listitem__caption">
+                                <?php echo $hesklang['team']; ?>
+                            </a>
+                        </div>
+                    </li>
                 <?php
                 }
 
                 //Reports
-                if (hesk_checkPermission('can_run_reports',0)) {
+                if (hesk_checkPermission('can_run_reports', 0)) {
                     $pages = array('reports', 'export');
                     $open_menu = in_array($calling_script, $pages) ? 'current submenu-is-opened' : '';
                 ?>
-                <li class="listitem submenu <?php echo $open_menu; ?>">
-                    <div class="listitem__icon">
-                        <a href="#">
-                            <svg class="icon icon-reports">
-                                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-reports"></use>
-                            </svg>
-                        </a>
-                    </div>
-                    <div class="separator"></div>
-                    <div class="listitem__menu">
-                        <a href="#" class="listitem__caption"><?php echo $hesklang['reports']; ?></a>
-                        <ul class="submenu__list">
-                            <li class="submenu__listitem <?php if ($calling_script === 'reports') { ?>current<?php } ?>">
-                                <a href="reports.php">
-                                    <?php echo $hesklang['reports_tab']; ?>
-                                </a>
-                            </li>
-                            <?php
-                            if (hesk_checkPermission('can_export',0)) {
-                                ?>
-                                <li class="submenu__listitem <?php if ($calling_script === 'export') { ?>current<?php } ?>">
-                                    <a href="export.php">
-                                        <?php echo $hesklang['export']; ?>
+                    <li class="listitem submenu <?php echo $open_menu; ?>">
+                        <div class="listitem__icon">
+                            <a href="#">
+                                <svg class="icon icon-reports">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-reports"></use>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="separator"></div>
+                        <div class="listitem__menu">
+                            <a href="#" class="listitem__caption"><?php echo $hesklang['reports']; ?></a>
+                            <ul class="submenu__list">
+                                <li class="submenu__listitem <?php if ($calling_script === 'reports') { ?>current<?php } ?>">
+                                    <a href="reports.php">
+                                        <?php echo $hesklang['reports_tab']; ?>
                                     </a>
                                 </li>
                                 <?php
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                </li>
+                                if (hesk_checkPermission('can_export', 0)) {
+                                ?>
+                                    <li class="submenu__listitem <?php if ($calling_script === 'export') { ?>current<?php } ?>">
+                                        <a href="export.php">
+                                            <?php echo $hesklang['export']; ?>
+                                        </a>
+                                    </li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                    </li>
                 <?php
-                } elseif (hesk_checkPermission('can_export',0)) {
-                    ?>
+                } elseif (hesk_checkPermission('can_export', 0)) {
+                ?>
                     <li class="listitem <?php if ($calling_script === 'export') { ?>current<?php } ?>">
                         <div class="listitem__icon">
                             <a href="export.php">
@@ -247,12 +253,14 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             </a>
                         </div>
                     </li>
-                    <?php
+                <?php
                 }
 
                 // Modules
-                if (hesk_checkPermission('can_run_reports',0) ||
-                    hesk_checkPermission('can_man_settings',0)) {
+                if (
+                    hesk_checkPermission('can_run_reports', 0) ||
+                    hesk_checkPermission('can_man_settings', 0)
+                ) {
                     $pages = array('module_statistics', 'module_escalate');
                     $open_menu = in_array($calling_script, $pages) ? 'current submenu-is-opened' : '';
                 ?>
@@ -270,31 +278,31 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                                 <?php echo "reportes" ?>
                             </a>
                             <ul class="submenu__list">
-                                        <?php if (hesk_checkPermission('can_run_reports',0)) {
-                                            ?>
-                                            <li class="submenu__listitem <?php if ($calling_script === 'module_statistics') { ?>current<?php } ?>">
-                                                <a href="module_statistics.php">
-                                                    <?php echo "Graficos" ?>
-                                                </a>
-                                            </li>
-                                            <?php
-                                        }
+                                <?php if (hesk_checkPermission('can_run_reports', 0)) {
+                                ?>
+                                    <li class="submenu__listitem <?php if ($calling_script === 'module_statistics') { ?>current<?php } ?>">
+                                        <a href="module_statistics.php">
+                                            <?php echo "Graficos" ?>
+                                        </a>
+                                    </li>
+                                <?php
+                                }
 
-                                        if (hesk_checkPermission('can_man_settings',0)) {
-                                            ?>
-                                            <li class="submenu__listitem <?php if ($calling_script === 'module_escalate') { ?>current<?php } ?>">
-                                                <a href="module_escalate.php">
-                                                    <?php echo "Reportes pdf" ?>
-                                                </a>
-                                            </li>
-                                            <?php
-                                        }
-                                        ?>
+                                if (hesk_checkPermission('can_man_settings', 0)) {
+                                ?>
+                                    <li class="submenu__listitem <?php if ($calling_script === 'module_escalate') { ?>current<?php } ?>">
+                                        <a href="module_escalate.php">
+                                            <?php echo "Reportes pdf" ?>
+                                        </a>
+                                    </li>
+                                <?php
+                                }
+                                ?>
                             </ul>
                         </div>
                     </li>
 
-                <!-- <li class="listitem submenu <?php echo $open_menu; ?>">
+                    <!-- <li class="listitem submenu <?php echo $open_menu; ?>">
                     <div class="listitem__icon">
                         <a href="#">
                             <svg class="icon icon-modules">
@@ -307,8 +315,8 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             <?php echo $hesklang['modules']; ?>
                         </a>
                         <ul class="submenu__list">
-                            <?php if (hesk_checkPermission('can_run_reports',0)) {
-                                ?>
+                            <?php if (hesk_checkPermission('can_run_reports', 0)) {
+                            ?>
                                 <li class="submenu__listitem <?php if ($calling_script === 'module_statistics') { ?>current<?php } ?>">
                                     <a href="module_statistics.php">
                                         <?php echo $hesklang['statistics']['tab']; ?>
@@ -317,7 +325,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                                 <?php
                             }
 
-                            if (hesk_checkPermission('can_man_settings',0)) {
+                            if (hesk_checkPermission('can_man_settings', 0)) {
                                 ?>
                                 <li class="submenu__listitem <?php if ($calling_script === 'module_escalate') { ?>current<?php } ?>">
                                     <a href="module_escalate.php">
@@ -326,7 +334,7 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                                 </li>
                                 <?php
                             }
-                            ?>
+                                ?>
                         </ul>
                     </div>
                 </li> -->
@@ -334,94 +342,98 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                 }
 
                 // Tools
-                if (hesk_checkPermission('can_ban_emails',0) ||
-                    hesk_checkPermission('can_ban_ips',0) ||
-                    hesk_checkPermission('can_service_msg',0) ||
-                    hesk_checkPermission('can_email_tpl',0) ||
-                    hesk_checkPermission('can_man_settings',0)) {
+                if (
+                    hesk_checkPermission('can_ban_emails', 0) ||
+                    hesk_checkPermission('can_ban_ips', 0) ||
+                    hesk_checkPermission('can_service_msg', 0) ||
+                    hesk_checkPermission('can_email_tpl', 0) ||
+                    hesk_checkPermission('can_man_settings', 0)
+                ) {
                     $pages = array('banned_emails', 'banned_ips', 'service_messages', 'email_templates', 'custom_fields', 'custom_statuses');
                     $open_menu = in_array($calling_script, $pages) ? 'current submenu-is-opened' : '';
                 ?>
-                <li class="separator"></li>
-                <li class="listitem submenu <?php echo $open_menu; ?>">
-                    <div class="listitem__icon">
-                        <a href="#">
-                            <svg class="icon icon-tools">
-                                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-tools"></use>
-                            </svg>
-                        </a>
-                    </div>
-                    <div class="listitem__menu">
-                        <a href="#" class="listitem__caption">
-                            <?php echo $hesklang['tools']; ?>
-                        </a>
-                        <ul class="submenu__list">
-                            <?php if (hesk_checkPermission('can_ban_emails',0)) {
+                    <li class="separator"></li>
+                    <li class="listitem submenu <?php echo $open_menu; ?>">
+                        <div class="listitem__icon">
+                            <a href="#">
+                                <svg class="icon icon-tools">
+                                    <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-tools"></use>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="listitem__menu">
+                            <a href="#" class="listitem__caption">
+                                <?php echo $hesklang['tools']; ?>
+                            </a>
+                            <ul class="submenu__list">
+                                <?php if (hesk_checkPermission('can_ban_emails', 0)) {
                                 ?>
-                                <li class="submenu__listitem <?php if ($calling_script === 'banned_emails') { ?>current<?php } ?>">
-                                    <a href="banned_emails.php">
-                                        <?php echo $hesklang['banemail']; ?>
-                                    </a>
-                                </li>
+                                    <li class="submenu__listitem <?php if ($calling_script === 'banned_emails') { ?>current<?php } ?>">
+                                        <a href="banned_emails.php">
+                                            <?php echo $hesklang['banemail']; ?>
+                                        </a>
+                                    </li>
                                 <?php
-                            }
+                                }
 
-                            if (hesk_checkPermission('can_ban_ips',0)) {
+                                if (hesk_checkPermission('can_ban_ips', 0)) {
                                 ?>
-                                <li class="submenu__listitem <?php if ($calling_script === 'banned_ips') { ?>current<?php } ?>">
-                                    <a href="banned_ips.php">
-                                        <?php echo $hesklang['banip']; ?>
-                                    </a>
-                                </li>
+                                    <li class="submenu__listitem <?php if ($calling_script === 'banned_ips') { ?>current<?php } ?>">
+                                        <a href="banned_ips.php">
+                                            <?php echo $hesklang['banip']; ?>
+                                        </a>
+                                    </li>
                                 <?php
-                            }
+                                }
 
-                            if (hesk_checkPermission('can_service_msg',0)) {
+                                if (hesk_checkPermission('can_service_msg', 0)) {
                                 ?>
-                                <li class="submenu__listitem <?php if ($calling_script === 'service_messages') { ?>current<?php } ?>">
-                                    <a href="service_messages.php">
-                                        <?php echo $hesklang['sm_title']; ?>
-                                    </a>
-                                </li>
+                                    <li class="submenu__listitem <?php if ($calling_script === 'service_messages') { ?>current<?php } ?>">
+                                        <a href="service_messages.php">
+                                            <?php echo $hesklang['sm_title']; ?>
+                                        </a>
+                                    </li>
                                 <?php
-                            }
+                                }
 
-                            if (hesk_checkPermission('can_email_tpl',0)) {
+                                if (hesk_checkPermission('can_email_tpl', 0)) {
                                 ?>
-                                <li class="submenu__listitem <?php if ($calling_script === 'email_templates') { ?>current<?php } ?>">
-                                    <a href="email_templates.php">
-                                        <?php echo $hesklang['et_title']; ?>
-                                    </a>
-                                </li>
+                                    <li class="submenu__listitem <?php if ($calling_script === 'email_templates') { ?>current<?php } ?>">
+                                        <a href="email_templates.php">
+                                            <?php echo $hesklang['et_title']; ?>
+                                        </a>
+                                    </li>
                                 <?php
-                            }
+                                }
 
-                            if (hesk_checkPermission('can_man_settings',0)) {
+                                if (hesk_checkPermission('can_man_settings', 0)) {
                                 ?>
-                                <li class="submenu__listitem <?php if ($calling_script === 'custom_fields') { ?>current<?php } ?>">
-                                    <a href="custom_fields.php">
-                                        <?php echo $hesklang['tab_4']; ?>
-                                    </a>
-                                </li>
-                                <li class="submenu__listitem <?php if ($calling_script === 'custom_statuses') { ?>current<?php } ?>">
-                                    <a href="custom_statuses.php">
-                                        <?php echo $hesklang['statuses']; ?>
-                                    </a>
-                                </li>
+                                    <li class="submenu__listitem <?php if ($calling_script === 'custom_fields') { ?>current<?php } ?>">
+                                        <a href="custom_fields.php">
+                                            <?php echo $hesklang['tab_4']; ?>
+                                        </a>
+                                    </li>
+                                    <li class="submenu__listitem <?php if ($calling_script === 'custom_statuses') { ?>current<?php } ?>">
+                                        <a href="custom_statuses.php">
+                                            <?php echo $hesklang['statuses']; ?>
+                                        </a>
+                                    </li>
                                 <?php
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                </li>
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                    </li>
                 <?php
                 }
 
-                if (hesk_checkPermission('can_man_settings',0)) {
-                    $pages = array('admin_settings_general', 'admin_settings_help_desk', 'admin_settings_knowledgebase',
-                        'admin_settings_email', 'admin_settings_ticket_list', 'admin_settings_misc');
+                if (hesk_checkPermission('can_man_settings', 0)) {
+                    $pages = array(
+                        'admin_settings_general', 'admin_settings_help_desk', 'admin_settings_knowledgebase',
+                        'admin_settings_email', 'admin_settings_ticket_list', 'admin_settings_misc'
+                    );
                     $open_menu = in_array($calling_script, $pages) ? 'current submenu-is-opened' : '';
-                    ?>
+                ?>
                     <li class="listitem submenu <?php echo $open_menu; ?>">
                         <div class="listitem__icon">
                             <a href="#">
@@ -468,9 +480,54 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             </ul>
                         </div>
                     </li>
-                    <?php
+                <?php
                 }
                 ?>
+
+
+
+
+
+
+                <li class="listitem submenu <?php echo $open_menu; ?>">
+                    <div class="listitem__icon">
+                        <a href="#">
+                            <svg class="icon icon-settings">
+                                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-settings"></use>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="listitem__menu">
+                        <a href="#" class="listitem__caption">
+                            <?php echo "Zonas" ?>
+                        </a>
+                        <ul class="submenu__list">
+                            <li class="submenu__listitem <?php if ($calling_script === 'admin_settings_general') { ?>current<?php } ?>">
+                                <a href="add_zone.php">
+                                    Agregar zona
+                                </a>
+                            </li>
+                            <li class="submenu__listitem <?php if ($calling_script === 'admin_settings_general') { ?>current<?php } ?>">
+                                <a href="admin_settings_general.php">
+                                    <?php echo $hesklang['tab_1']; ?>
+                                </a>
+                            </li>
+                            <li class="submenu__listitem <?php if ($calling_script === 'admin_settings_general') { ?>current<?php } ?>">
+                                <a href="admin_settings_general.php">
+                                    <?php echo $hesklang['tab_1']; ?>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
+
+
+
+
+
+
                 <li class="separator mobile"></li>
                 <li class="listitem mobile <?php if ($calling_script === 'mail') { ?>current<?php } ?>">
                     <div class="listitem__icon">
@@ -484,10 +541,10 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                         <a href="mail.php" class="listitem__caption">
                             <?php echo $hesklang['menu_msg']; ?>
                         </a>
-                        <?php if ($num_mail > 0): ?>
-                        <span class="badge listitem__notification">
-                            <?php echo $num_mail; ?>
-                        </span>
+                        <?php if ($num_mail > 0) : ?>
+                            <span class="badge listitem__notification">
+                                <?php echo $num_mail; ?>
+                            </span>
                         <?php endif; ?>
                     </div>
                 </li>
@@ -527,8 +584,8 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             <svg class="icon icon-mail">
                                 <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-mail"></use>
                             </svg>
-                            <?php if ($num_mail > 0): ?>
-                            <div class="badge"><?php echo $num_mail; ?></div>
+                            <?php if ($num_mail > 0) : ?>
+                                <div class="badge"><?php echo $num_mail; ?></div>
                             <?php
                             endif;
                             unset($num_mail);
@@ -587,18 +644,16 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
             </div>
         </div>
     </header>
-<?php
-// Show a notice if we are in maintenance mode
-if ( hesk_check_maintenance(false) )
-{
-	echo '<br />';
-	hesk_show_notice($hesklang['mma2'], $hesklang['mma1'], false);
-}
+    <?php
+    // Show a notice if we are in maintenance mode
+    if (hesk_check_maintenance(false)) {
+        echo '<br />';
+        hesk_show_notice($hesklang['mma2'], $hesklang['mma1'], false);
+    }
 
-// Show a notice if we are in "Knowledgebase only" mode
-if ( hesk_check_kb_only(false) )
-{
-	echo '<br />';
-	hesk_show_notice($hesklang['kbo2'], $hesklang['kbo1'], false);
-}
-?>
+    // Show a notice if we are in "Knowledgebase only" mode
+    if (hesk_check_kb_only(false)) {
+        echo '<br />';
+        hesk_show_notice($hesklang['kbo2'], $hesklang['kbo1'], false);
+    }
+    ?>
