@@ -40,6 +40,7 @@ include HESK_PATH.'fpdf/fpdf.php';
     <script src="<?php echo HESK_PATH; ?>js/jquery-3.5.1.min.js"></script>
 	<script type="text/javascript" src="<?php echo HESK_PATH; ?>js/hesk_javascript<?php echo $hesk_settings['debug_mode'] ? '' : '.min'; ?>.js?<?php echo $hesk_settings['hesk_version']; ?>"></script>
     <script src="<?php echo HESK_PATH; ?>js/selectize.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <?php
 	/* Tickets shouldn't be indexed by search engines */

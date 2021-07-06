@@ -39,7 +39,7 @@ require_once(HESK_PATH . 'inc/header.inc.php');
 require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
 ?>
-
+<script type="text/javascript" src="cache/js/validation.js"></script>
 <?php
 
 // agregar
@@ -101,23 +101,25 @@ if (isset($_POST['Crear'])) {
     <h1>Agregar</h1>
     <div class="table-wrap">
 
-        <form action="add_zone.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>">
+        <form action="add_zone.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" onsubmit='return validar()'>
             <div class="form-group">
                 <input type="text" name="id" id="id" class="form-control" placeholder="Id Zona">
             </div>
             <div class="form-group">
-                <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre Zona">
+                <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre Zona" require = "true">
             </div>
             <div class="form-group">
-                <select class="form-control" name="ingeniero" id="ingeniero">
+                <select  class="form-control" name="ingeniero" id="ingeniero" require = "true">
                     <option disabled>Asignar zona</option>
                     <?php
                     $sqlI = "SELECT id, name FROM hesk_users WHERE zone IS NULL AND rol = 1";
                     $resI = hesk_dbQuery($sqlI);
                     while ($regI = hesk_dbFetchAssoc($resI)) {
+                        
                         echo "<option value='$regI[id]'>$regI[name]</option>";
                     }
                     ?>
+                    
                 </select>
             </div>
 
@@ -166,4 +168,5 @@ if (isset($_POST['Crear'])) {
     </div>
 </div>
 <?php require_once(HESK_PATH . 'inc/footer.inc.php'); ?>
-<script type="text/javascript" src="../js/no-resend.js"></script>
+<script type="text/javascript" src="../js/no-resend.js"> </script>
+
