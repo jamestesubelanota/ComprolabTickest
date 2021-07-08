@@ -39,7 +39,7 @@ require_once(HESK_PATH . 'inc/header.inc.php');
 require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
 ?>
-<script type="text/javascript" src="cache/js/validation.js"></script>
+<script type="text/javascript" src="../js/validation.js"></script>
 <?php
 
 // agregar
@@ -60,8 +60,8 @@ if (isset($_POST['Crear'])) {
             hesk_dbQuery("INSERT INTO
     
             hesk_zones (
-                id,
-                nombre,
+                codigo_zona,
+                nombre
             )
             VALUES (
                 '$id',
@@ -69,17 +69,19 @@ if (isset($_POST['Crear'])) {
             )
             
             ");
+            $resZ = hesk_dbQuery("SELECT id FROM hesk_zones WHERE codigo_zona = '$id'");
+            $regZ = hesk_dbFetchAssoc($resZ);
             hesk_dbQuery("UPDATE hesk_users
     
-                SET zone=$id
-                WHERE id=$ingeniero      
+                SET zone='$regZ[id]'
+                WHERE id=$ingeniero 
             
             ");
         } else {
             hesk_dbQuery("INSERT INTO
     
             hesk_zones (
-                id,
+                codigo_zona,
                 nombre
             )
             VALUES (
@@ -102,12 +104,16 @@ if (isset($_POST['Crear'])) {
     <div class="table-wrap">
 
         <form action="add_zone.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" onsubmit='return validar()'>
+            
+            
             <div class="form-group">
                 <input type="text" name="id" id="id" class="form-control" placeholder="Id Zona">
             </div>
             <div class="form-group">
                 <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre Zona" require = "true">
             </div>
+            
+            
             <div class="form-group">
                 <select  class="form-control" name="ingeniero" id="ingeniero" require = "true">
                     <option disabled>Asignar zona</option>
@@ -140,12 +146,15 @@ if (isset($_POST['Crear'])) {
             // consultar
             //hu = hesk_users, hz=hesk_zones
             $sqlC = "SELECT
-                        hz.id AS zone, 
+                        hz.id AS ident,
+                        hz.codigo_zona AS zone, 
                         hz.nombre AS nomZone, 
-                        hu.name as nomUsu 
+                        hu.name as nomUsu,
+                        hu.id as idUsu
                         FROM hesk_users AS hu
                         RIGHT JOIN hesk_zones AS hz
-                        ON hu.zone=hz.id;
+                        ON hu.zone=hz.id
+                        ORDER BY hz.id;
 
                     ";
 
@@ -160,7 +169,7 @@ if (isset($_POST['Crear'])) {
                 }
                 echo "<td>$reg[zone]</td>";
                 echo "<td>$reg[nomZone]</td>";
-                echo "<td><a href='' class=''>Editar</a></td>";
+                echo "<td><a href='add_zone.php?id=$reg[zone]&nombre=$reg[nomZone]' class=''>Editar</a><br><a href='delete_zone.php?cas=$reg[ident]&cas2=$reg[idUsu]'>Eliminar</a></td>";
                 echo "</tr>";
             }
             ?>
