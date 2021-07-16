@@ -3031,7 +3031,7 @@ input::-ms-clear {
     margin-top: 24px;
     padding: 12px;
     border-radius: 2px;
-    box-shadow: 0 2px 8px 0 rgba(38, 40, 42, 0.1);
+    box-shadow: 3px 5px 11px 3px rgba(38, 40, 42, 0.1);
     background-color: #fff
 }
 @media screen and (max-width: 900px) {
@@ -11934,3 +11934,13 @@ p {
     margin-bottom: 1rem
 }
 
+.h1est{
+    margin-top: 15px;
+    margin-left: 16px; 
+    font-size: 18px;
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.22;
+    letter-spacing: .1px;
+}

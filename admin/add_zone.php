@@ -49,12 +49,12 @@ $nombre = $_POST['nombre'];
 $ingeniero = $_POST['ingeniero'];
 
 
-
+// al presionar en botón de crear
 if (isset($_POST['Crear'])) {
-    
+    // condición para confirmar que no estén vacios los campos
     if (isset($_POST['id']) && isset($_POST['nombre'])) {
 
-
+        // condicion para saber si hay un ingeniero al que se le vaya a asignar la zona
         if (isset($_POST['ingeniero'])) {
 
             hesk_dbQuery("INSERT INTO
@@ -99,8 +99,8 @@ if (isset($_POST['Crear'])) {
 
 ?>
 
-<div class="main__content settings">
-    <h1>Agregar</h1>
+<div style="margin-left: 10px;" class="main__content settings">
+    <h1 class="h1est">Agregar</h1>
     <div class="table-wrap">
 
         <form action="add_zone.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" onsubmit='return validar()'>
@@ -130,10 +130,9 @@ if (isset($_POST['Crear'])) {
             </div>
 
             <input name="Crear" type="submit" value="Crear" class="btn btn-full">
-            <input name="Editar" type="submit" value="Editar" class="btn btn-full">
         </form>
     </div>
-    <h1>Zonas registradas </h1>
+    <h1 class="h1est">Zonas registradas </h1>
     <div class="table-wrap">
         <table class="table sindu-table ticket-list sindu_origin_table">
             <tr>
@@ -169,7 +168,7 @@ if (isset($_POST['Crear'])) {
                 }
                 echo "<td>$reg[zone]</td>";
                 echo "<td>$reg[nomZone]</td>";
-                echo "<td><a href='add_zone.php?id=$reg[zone]&nombre=$reg[nomZone]' class=''>Editar</a><br><a href='delete_zone.php?cas=$reg[ident]&cas2=$reg[idUsu]'>Eliminar</a></td>";
+                echo "<td><a href='edit_zone.php?cas0=$reg[ident]&cas=$reg[zone]&cas2=$reg[nomZone]' class=''>Editar</a><br><a href='delete_zone.php?cas=$reg[ident]&cas2=$reg[idUsu]'>Eliminar</a></td>";
                 echo "</tr>";
             }
             ?>

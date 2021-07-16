@@ -491,9 +491,10 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
 
                 <li class="listitem submenu <?php echo $open_menu; ?>">
                     <div class="listitem__icon">
-                        <a href="#">
+                        <a class="icon icon-settings" href="#">
+                        <img src="<?php echo HESK_PATH; ?>img/map.png">
                             <svg class="icon icon-settings">
-                                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-settings"></use>
+                                <use xlink:href="<?php echo HESK_PATH; ?>img/sprite.svg#icon-zone"></use>
                             </svg>
                         </a>
                     </div>
@@ -502,19 +503,14 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                             <?php echo "Zonas" ?>
                         </a>
                         <ul class="submenu__list">
-                            <li class="submenu__listitem <?php if ($calling_script === 'admin_settings_general') { ?>current<?php } ?>">
+                            <li class="submenu__listitem ">
                                 <a href="add_zone.php">
                                     Agregar zona
                                 </a>
                             </li>
-                            <li class="submenu__listitem <?php if ($calling_script === 'admin_settings_general') { ?>current<?php } ?>">
-                                <a href="admin_settings_general.php">
-                                    <?php echo $hesklang['tab_1']; ?>
-                                </a>
-                            </li>
-                            <li class="submenu__listitem <?php if ($calling_script === 'admin_settings_general') { ?>current<?php } ?>">
-                                <a href="admin_settings_general.php">
-                                    <?php echo $hesklang['tab_1']; ?>
+                            <li style="display: none;" class="submenu__listitem ">
+                                <a href="edit_zone.php">
+                                    Editar zona
                                 </a>
                             </li>
                         </ul>
