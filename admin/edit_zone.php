@@ -56,7 +56,6 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
         $query = "UPDATE hesk_zones SET nombre='$new_name', codigo_zona='$new_id' WHERE id=$_POST[idZ]";
         echo "<a href='add_zone.php'>volver al listado</a>";
         hesk_dbQuery($query);
-        header('Location: add_zone.php');
     }
     
 

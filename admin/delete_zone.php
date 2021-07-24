@@ -24,12 +24,12 @@ $sql1 = "DELETE FROM hesk_zones WHERE id = '$id'";
 
 hesk_dbQuery($sql1);
 
-$resZ = hesk_dbQuery("SELECT id FROM hesk_zones WHERE codigo_zona = '$id'");
-$regZ = hesk_dbFetchAssoc($resZ);
-hesk_dbQuery("UPDATE hesk_users
-                SET zone=NULL
-                WHERE id=$idUsu 
-            ");
+// $resZ = hesk_dbQuery("SELECT id FROM hesk_zones WHERE codigo_zona = '$id'");
+// $regZ = hesk_dbFetchAssoc($resZ);
+// hesk_dbQuery("UPDATE hesk_users
+//                 SET zone=NULL
+//                 WHERE id=$idUsu 
+//             ");
 
 header("Location: add_zone.php");
 

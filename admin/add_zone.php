@@ -67,20 +67,14 @@ if (isset($_POST['Crear'])) {
     
             hesk_zones (
                 codigo_zona,
-                nombre
+                nombre,
+                Encargado
             )
             VALUES (
                 '$id',
-                '$nombre'
+                '$nombre',
+                '$ingeniero'
             )
-            
-            ");
-            $resZ = hesk_dbQuery("SELECT id FROM hesk_zones WHERE codigo_zona = '$id'");
-            $regZ = hesk_dbFetchAssoc($resZ);
-            hesk_dbQuery("UPDATE hesk_users
-    
-                SET zone='$regZ[id]'
-                WHERE id=$ingeniero 
             
             ");
         } else {
@@ -124,7 +118,7 @@ if (isset($_POST['Crear'])) {
                 <select class="form-control" name="ingeniero" id="ingeniero" require="true">
                     <option disabled>Asignar zona</option>
                     <?php
-                    $sqlI = "SELECT id, name FROM hesk_users WHERE zone IS NULL AND rol = 1";
+                    $sqlI = "SELECT id, name FROM hesk_users WHERE rol = 1";
                     $resI = hesk_dbQuery($sqlI);
                     while ($regI = hesk_dbFetchAssoc($resI)) {
 
@@ -161,7 +155,7 @@ if (isset($_POST['Crear'])) {
                         hu.id as idUsu
                         FROM hesk_users AS hu
                         RIGHT JOIN hesk_zones AS hz
-                        ON hu.zone=hz.id
+                        ON hu.id=hz.Encargado
                         ORDER BY hz.id;
 
                     ";
@@ -177,7 +171,7 @@ if (isset($_POST['Crear'])) {
                 }
                 echo "<td>$reg[zone]</td>";
                 echo "<td>$reg[nomZone]</td>";
-                echo "<td><a style='color:blue; text-align: center;' href='edit_zone.php?cas0=$reg[ident]&cas=$reg[zone]&cas2=$reg[nomZone]' class=''><span data-tooltip='Editar'><i class='fas fa-edit'></i></span></a><br><a style='color:red;' href='delete_zone.php?cas=$reg[ident]&cas2=$reg[idUsu]'><i class='fas fa-trash-alt'></i></a></td>";
+                echo "<td><a style='color:blue; text-align: center;' href='edit_zone.php?cas0=$reg[ident]&cas=$reg[zone]&cas2=$reg[nomZone]' class=''><span data-tooltip='Editar'><i class='fas fa-edit'></i></span></a>\t<a style='color:red;' href='delete_zone.php?cas=$reg[ident]&cas2=$reg[idUsu]'><i class='fas fa-trash-alt'></i></a></td>";
                 echo "</tr>";
             }
             ?>
