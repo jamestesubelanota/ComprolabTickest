@@ -71,12 +71,12 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
 
             <div class="form-group">
-                <input value="<?php echo $_GET['cas'] ?>" type="text" name="id" id="id" class="form-control" placeholder="Id Zona">
+                <input autocomplete="off" value="<?php echo $_GET['cas'] ?>" type="text" name="id" id="id" class="form-control" placeholder="Id Zona">
             </div>
             <div class="form-group">
                 <input value="<?php echo $_GET['cas2'] ?>" type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre Zona" require="true">
             </div>
-            <input type="hidden" name="idZ" value="<?php echo $ident ?>">
+            <input autocomplete="off" type="hidden" name="idZ" value="<?php echo $ident ?>">
 
 
             <input name="editar" type="submit" value="Editar" class="btn btn-full">

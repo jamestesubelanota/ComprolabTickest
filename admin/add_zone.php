@@ -40,6 +40,12 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
 ?>
 <script type="text/javascript" src="../js/validation.js"></script>
+<head>
+    <link rel="stylesheet" href="../css/jquery.dataTables.min.css">
+    <script src="../js/jquery-3.5.1.js"></script>
+    <script src="../js/jquery.dataTables.min.js"></script>
+
+</head>
 <?php
 
 // agregar
@@ -104,28 +110,28 @@ if (isset($_POST['Crear'])) {
     <div class="table-wrap">
 
         <form action="add_zone.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" onsubmit='return validar()'>
-            
-            
+
+
             <div class="form-group">
-                <input type="text" name="id" id="id" class="form-control" placeholder="Id Zona">
+                <input autocomplete="off" type="text" name="id" id="id" class="form-control" placeholder="Id Zona">
             </div>
             <div class="form-group">
-                <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre Zona" require = "true">
+                <input autocomplete="off" type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre Zona" require="true">
             </div>
-            
-            
+
+
             <div class="form-group">
-                <select  class="form-control" name="ingeniero" id="ingeniero" require = "true">
+                <select class="form-control" name="ingeniero" id="ingeniero" require="true">
                     <option disabled>Asignar zona</option>
                     <?php
                     $sqlI = "SELECT id, name FROM hesk_users WHERE zone IS NULL AND rol = 1";
                     $resI = hesk_dbQuery($sqlI);
                     while ($regI = hesk_dbFetchAssoc($resI)) {
-                        
+
                         echo "<option value='$regI[id]'>$regI[name]</option>";
                     }
                     ?>
-                    
+
                 </select>
             </div>
 
@@ -134,13 +140,16 @@ if (isset($_POST['Crear'])) {
     </div>
     <h1 class="h1est">Zonas registradas </h1>
     <div class="table-wrap">
-        <table class="table sindu-table ticket-list sindu_origin_table">
-            <tr>
-                <th>Ingeniero a cargo</th>
-                <th>Id de zona</th>
-                <th>Zona</th>
-                <th>Acciones</th>
-            </tr>
+        <table id="tablazonas" class="display">
+            <thead>
+                <tr>
+                    <th>Ingeniero a cargo</th>
+                    <th>Id de zona</th>
+                    <th>Zona</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
             <?php
             // consultar
             //hu = hesk_users, hz=hesk_zones
@@ -168,13 +177,36 @@ if (isset($_POST['Crear'])) {
                 }
                 echo "<td>$reg[zone]</td>";
                 echo "<td>$reg[nomZone]</td>";
-                echo "<td><a href='edit_zone.php?cas0=$reg[ident]&cas=$reg[zone]&cas2=$reg[nomZone]' class=''>Editar</a><br><a href='delete_zone.php?cas=$reg[ident]&cas2=$reg[idUsu]'>Eliminar</a></td>";
+                echo "<td><a style='color:blue; text-align: center;' href='edit_zone.php?cas0=$reg[ident]&cas=$reg[zone]&cas2=$reg[nomZone]' class=''><span data-tooltip='Editar'><i class='fas fa-edit'></i></span></a><br><a style='color:red;' href='delete_zone.php?cas=$reg[ident]&cas2=$reg[idUsu]'><i class='fas fa-trash-alt'></i></a></td>";
                 echo "</tr>";
             }
             ?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Ingeniero a cargo</th>
+                    <th>Id de zona</th>
+                    <th>Zona</th>
+                    <th>Acciones</th>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('#tablazonas').DataTable({
+            "language": {
+            "lengthMenu": "Mostrar _MENU_ filas por pagina",
+            "zeroRecords": "No se encuentran resultados",
+            "info": "Mostrando _PAGE_ de _PAGES_",
+            "infoEmpty": "Sin filas disponibles",
+            "infoFiltered": "(filtered from _MAX_ total records)"
+            },
+            "pagingType": "full_numbers"
+        });
+    });
+</script>
 <?php require_once(HESK_PATH . 'inc/footer.inc.php'); ?>
-<script type="text/javascript" src="../js/no-resend.js"> </script>
 
+<script type="text/javascript" src="../js/no-resend.js"> </script>
