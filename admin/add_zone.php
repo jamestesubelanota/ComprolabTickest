@@ -149,7 +149,6 @@ if (isset($_POST['Crear'])) {
             //hu = hesk_users, hz=hesk_zones
             $sqlC = "SELECT
                         hz.id AS ident,
-                        hz.codigo_zona AS zone, 
                         hz.nombre AS nomZone, 
                         hu.name as nomUsu,
                         hu.id as idUsu
