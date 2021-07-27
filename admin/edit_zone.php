@@ -53,7 +53,8 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
         
         $new_id = $_POST['id'];
         $new_name = $_POST['nombre'];
-        $query = "UPDATE hesk_zones SET nombre='$new_name', codigo_zona='$new_id' WHERE id=$_POST[idZ]";
+        $new_enginner = $_POST['ingeniero'];
+        $query = "UPDATE hesk_zones SET nombre='$new_name', codigo_zona='$new_id', encargado='$new_enginner' WHERE id=$_POST[idZ]";
         echo "<a href='add_zone.php'>volver al listado</a>";
         hesk_dbQuery($query);
     }
@@ -74,6 +75,20 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
             </div>
             <div class="form-group">
                 <input value="<?php echo $_GET['cas2'] ?>" type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre Zona" require="true">
+            </div>
+            <div class="form-group">
+                <select class="form-control" name="ingeniero" id="ingeniero" require="true">
+                    <option disabled>Asignar zona</option>
+                    <?php
+                    $sqlI = "SELECT id, name FROM hesk_users WHERE rol = 1";
+                    $resI = hesk_dbQuery($sqlI);
+                    while ($regI = hesk_dbFetchAssoc($resI)) {
+
+                        echo "<option value='$regI[id]'>$regI[name]</option>";
+                    }
+                    ?>
+
+                </select>
             </div>
             <input autocomplete="off" type="hidden" name="idZ" value="<?php echo $ident ?>">
 
