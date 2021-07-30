@@ -51,10 +51,10 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
     if (isset($_POST['editar'])) {
         
-        $new_id = $_POST['id'];
+        // $new_id = $_POST['id'];
         $new_name = $_POST['nombre'];
-        $new_enginner = $_POST['ingeniero'];
-        $query = "UPDATE hesk_zones SET nombre='$new_name', codigo_zona='$new_id', encargado='$new_enginner' WHERE id=$_POST[idZ]";
+        // $new_enginner = $_POST['ingeniero'];
+        $query = "UPDATE hesk_zones SET nombre='$new_name' WHERE id=$_POST[idZ]";
         echo "<a href='add_zone.php'>volver al listado</a>";
         hesk_dbQuery($query);
     }
@@ -70,13 +70,13 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
         <form action="edit_zone.php" method="post" class="form" onsubmit='return validar()'>
 
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <input autocomplete="off" value="<?php echo $_GET['cas'] ?>" type="text" name="id" id="id" class="form-control" placeholder="Id Zona">
-            </div>
+            </div> -->
             <div class="form-group">
                 <input value="<?php echo $_GET['cas2'] ?>" type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre Zona" require="true">
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <select class="form-control" name="ingeniero" id="ingeniero" require="true">
                     <option disabled>Asignar zona</option>
                     <?php
@@ -89,7 +89,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
                     ?>
 
                 </select>
-            </div>
+            </div> -->
             <input autocomplete="off" type="hidden" name="idZ" value="<?php echo $ident ?>">
 
 

@@ -513,6 +513,11 @@ $calling_script = basename($_SERVER['PHP_SELF'], '.php');
                                     Editar zona
                                 </a>
                             </li>
+                            <li class="submenu__listitem">
+                                <a href="add_customer.php">
+                                    Agregar comodato
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

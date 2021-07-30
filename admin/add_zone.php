@@ -40,6 +40,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
 ?>
 <script type="text/javascript" src="../js/validation.js"></script>
+
 <head>
     <link rel="stylesheet" href="../css/jquery.dataTables.min.css">
     <script src="../js/jquery-3.5.1.js"></script>
@@ -58,43 +59,39 @@ $ingeniero = $_POST['ingeniero'];
 // al presionar en botón de crear
 if (isset($_POST['Crear'])) {
     // condición para confirmar que no estén vacios los campos
-    if (isset($_POST['id']) && isset($_POST['nombre'])) {
+    // if (isset($_POST['id']) && isset($_POST['nombre'])) {
 
         // condicion para saber si hay un ingeniero al que se le vaya a asignar la zona
-        if (isset($_POST['ingeniero'])) {
+        // if (isset($_POST['ingeniero'])) {
 
             hesk_dbQuery("INSERT INTO
     
             hesk_zones (
-                codigo_zona,
-                nombre,
-                Encargado
-            )
-            VALUES (
-                '$id',
-                '$nombre',
-                '$ingeniero'
-            )
-            
-            ");
-        } else {
-            hesk_dbQuery("INSERT INTO
-    
-            hesk_zones (
-                codigo_zona,
                 nombre
             )
             VALUES (
-                '$id',
                 '$nombre'
             )
             
             ");
+        // } else {
+        //     hesk_dbQuery("INSERT INTO
+    
+        //     hesk_zones (
+        //         codigo_zona,
+        //         nombre
+        //     )
+        //     VALUES (
+        //         '$id',
+        //         '$nombre'
+        //     )
+            
+        //     ");
         }
-    } else {
-        echo "Por favor ingrese todos los datos";
-    }
-}
+    // } else {
+    //     echo "Por favor ingrese todos los datos";
+    // }
+// }
 
 
 ?>
@@ -106,15 +103,15 @@ if (isset($_POST['Crear'])) {
         <form action="add_zone.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" onsubmit='return validar()'>
 
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <input autocomplete="off" type="text" name="id" id="id" class="form-control" placeholder="Id Zona">
-            </div>
+            </div> -->
             <div class="form-group">
                 <input autocomplete="off" type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre Zona" require="true">
             </div>
 
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <select class="form-control" name="ingeniero" id="ingeniero" require="true">
                     <option disabled>Asignar zona</option>
                     <?php
@@ -127,7 +124,7 @@ if (isset($_POST['Crear'])) {
                     ?>
 
                 </select>
-            </div>
+            </div> -->
 
             <input name="Crear" type="submit" value="Crear" class="btn btn-full">
         </form>
@@ -137,48 +134,34 @@ if (isset($_POST['Crear'])) {
         <table id="tablazonas" class="display">
             <thead>
                 <tr>
-                    <th>Ingeniero a cargo</th>
-                    <th>Id de zona</th>
                     <th>Zona</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-            <?php
-            // consultar
-            //hu = hesk_users, hz=hesk_zones
-            $sqlC = "SELECT
+                <?php
+                // consultar
+                //hu = hesk_users, hz=hesk_zones
+                $sqlC = "SELECT
                         hz.id AS ident,
-                        hz.nombre AS nomZone, 
-                        hu.name as nomUsu,
-                        hu.id as idUsu
-                        FROM hesk_users AS hu
-                        RIGHT JOIN hesk_zones AS hz
-                        ON hu.id=hz.Encargado
+                        hz.nombre AS nomZone
+                        FROM hesk_zones AS hz
                         ORDER BY hz.id;
 
                     ";
 
-            $res = hesk_dbQuery($sqlC);
+                $res = hesk_dbQuery($sqlC);
 
-            while ($reg = hesk_dbFetchAssoc($res)) {
-                echo "<tr>";
-                if ($reg["nomUsu"] === null) {
-                    echo "<td>No hay nadie encargado</td>";
-                } else {
-                    echo "<td>$reg[nomUsu]</td>";
+                while ($reg = hesk_dbFetchAssoc($res)) {
+                    echo "<tr>";
+                    echo "<td>$reg[nomZone]</td>";
+                    echo "<td style='text-align: center;'><a style='color:blue;' href='edit_zone.php?cas0=$reg[ident]&cas=$reg[zone]&cas2=$reg[nomZone]' class=''><span data-tooltip='Editar'><i class='fas fa-edit'></i></span></a>\t<a style='color:red;' href='delete_zone.php?cas=$reg[ident]&cas2=$reg[idUsu]'><i class='fas fa-trash-alt'></i></a></td>";
+                    echo "</tr>";
                 }
-                echo "<td>$reg[zone]</td>";
-                echo "<td>$reg[nomZone]</td>";
-                echo "<td><a style='color:blue; text-align: center;' href='edit_zone.php?cas0=$reg[ident]&cas=$reg[zone]&cas2=$reg[nomZone]' class=''><span data-tooltip='Editar'><i class='fas fa-edit'></i></span></a>\t<a style='color:red;' href='delete_zone.php?cas=$reg[ident]&cas2=$reg[idUsu]'><i class='fas fa-trash-alt'></i></a></td>";
-                echo "</tr>";
-            }
-            ?>
+                ?>
             </tbody>
             <tfoot>
                 <tr>
-                    <th>Ingeniero a cargo</th>
-                    <th>Id de zona</th>
                     <th>Zona</th>
                     <th>Acciones</th>
                 </tr>
@@ -190,11 +173,11 @@ if (isset($_POST['Crear'])) {
     $(document).ready(function() {
         $('#tablazonas').DataTable({
             "language": {
-            "lengthMenu": "Mostrar _MENU_ filas por pagina",
-            "zeroRecords": "No se encuentran resultados",
-            "info": "Mostrando _PAGE_ de _PAGES_",
-            "infoEmpty": "Sin filas disponibles",
-            "infoFiltered": "(filtered from _MAX_ total records)"
+                "lengthMenu": "Mostrar _MENU_ filas por pagina",
+                "zeroRecords": "No se encuentran resultados",
+                "info": "Mostrando _PAGE_ de _PAGES_",
+                "infoEmpty": "Sin filas disponibles",
+                "infoFiltered": "(filtered from _MAX_ total records)"
             },
             "pagingType": "full_numbers"
         });
