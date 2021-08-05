@@ -34,11 +34,7 @@ $help_folder = '../language/' . $hesk_settings['languages'][$hesk_settings['lang
 $enable_save_settings   = 0;
 $enable_use_attachments = 0;
 
-// Print header
-require_once(HESK_PATH . 'inc/header.inc.php');
 
-// Print main manage users page
-require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 ?>
 
 <?php
@@ -53,13 +49,19 @@ if (isset($_POST['btnEditar'])) {
         echo "<a href='add_customer.php'>Volver a la lista</a>";
         $sql = "UPDATE `hesk_customers` SET `nombre` = '$_POST[nombre]', `zona` = '$_POST[zona]' WHERE `hesk_customers`.`id` = $_POST[ide];";
         hesk_dbQuery($sql);
-
+    header("Location: add_customer.php");
 }
+
+// Print header
+require_once(HESK_PATH . 'inc/header.inc.php');
+
+// Print main manage users page
+require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 ?>
 
 
 <div style="margin-left: 10px;" class="main__content settings">
-    <h1 class="h1est">Agregar</h1>
+    <h1 class="h1est">Modificar cliente</h1>
     <div class="table-wrap">
         <form action="edit_customer.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>">
             <div class="form-group">

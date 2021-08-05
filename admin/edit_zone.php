@@ -33,11 +33,7 @@ $help_folder = '../language/' . $hesk_settings['languages'][$hesk_settings['lang
 $enable_save_settings   = 0;
 $enable_use_attachments = 0;
 
-// Print header
-require_once(HESK_PATH . 'inc/header.inc.php');
 
-// Print main manage users page
-require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
 ?>
 <script type="text/javascript" src="../js/validation.js"></script>
@@ -57,9 +53,14 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
         $query = "UPDATE hesk_zones SET nombre='$new_name' WHERE id=$_POST[idZ]";
         echo "<a href='add_zone.php'>volver al listado</a>";
         hesk_dbQuery($query);
+        header("Location: add_zone.php");
     }
     
+// Print header
+require_once(HESK_PATH . 'inc/header.inc.php');
 
+// Print main manage users page
+require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
 ?>
 

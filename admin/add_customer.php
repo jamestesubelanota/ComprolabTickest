@@ -63,7 +63,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 ?>
 
 <div style="margin-left: 10px;" class="main__content settings">
-    <h1 class="h1est">Agregar</h1>
+    <h1 class="h1est">Agregar comodato</h1>
     <div class="table-wrap">
         <form action="add_customer.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>">
             <div class="form-group">
@@ -85,11 +85,12 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
             <input type="submit" name="btnCrear" value="Crear" class="btnb btnb-primary">
         </form>
     </div>
-    <h1 class="h1est">Clientes registrados </h1>
+    <h1 class="h1est">Clientes registrados con encargado</h1>
     <div class="table-wrap">
         <table id="tablaclientes" class="display">
             <thead>
                 <tr>
+                    <th>Encargado</th>
                     <th>Cliente</th>
                     <th>Zonas</th>
                     <th>Acciones</th>
@@ -98,8 +99,8 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
             <tbody>
                 <?php
                 // consultar
-                //hu = hesk_users, hz=hesk_zones
-                $sqlC = "SELECT hc.id as ident, hc.nombre as cliente, hz.nombre as zona, hc.zona as idzona FROM `hesk_customers` hc JOIN `hesk_zones` hz ON hc.zona=hz.id;
+                //hu = hesk_users, hz=hesk_zones, hc=hesk_customers, hcu = hesk_customers_users
+                $sqlC = "SELECT hu.name as encargado, hc.id as ident, hc.nombre as cliente, hz.nombre as zona, hc.zona as idzona FROM `hesk_customers` hc JOIN `hesk_zones` hz ON hc.zona=hz.id JOIN hesk_customers_users hcu ON hcu.idcustomer=hc.id JOIN hesk_users hu ON hu.id = hcu.idencargado;
 
                     ";
 
@@ -107,6 +108,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
                 while ($reg = hesk_dbFetchAssoc($res)) {
                     echo "<tr>";
+                    echo "<td>$reg[encargado]</td>";
                     echo "<td>$reg[cliente]</td>";
                     echo "<td>$reg[zona]</td>";
                     echo "<td style='text-align: center;'><a style='color:blue;' href='edit_customer.php?cas0=$reg[ident]&cas=$reg[cliente]&cas2=$reg[zona]&cas3=$reg[idzona]' class=''><span data-tooltip='Editar'><i class='fas fa-edit'></i></span></a>\t<a style='color:red;' href='delete_customer.php?cas=$reg[ident]'><i class='fas fa-trash-alt'></i></a></td>";
@@ -116,6 +118,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
             </tbody>
             <tfoot>
                 <tr>
+                    <th>Encargado</th>
                     <th>Cliente</th>
                     <th>Zona</th>
                     <th>Acciones</th>
