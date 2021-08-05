@@ -1,1 +1,0 @@
-<?php if (!defined('IN_SCRIPT')) {die();} $hesk_settings['kb_enable']=0;

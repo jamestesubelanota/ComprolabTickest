@@ -131,7 +131,7 @@ $hesk_settings['smtp_timeout']=60;
 $hesk_settings['smtp_ssl']=0;
 $hesk_settings['smtp_tls']=1;
 $hesk_settings['smtp_user']='Comprolabcorreos@gmail.com';
-$hesk_settings['smtp_password']='comprolab_87';
+$hesk_settings['smtp_password']='C0mpr0l4b';
 
 // --> Email piping
 $hesk_settings['email_piping']=0;
