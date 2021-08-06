@@ -58,25 +58,51 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
         $sql = "INSERT INTO hesk_customers (nombre,zona) VALUES ('$nombre','$zona');";
         hesk_dbQuery($sql);
+            // Si se colocó algún encargado se actualizará la relación para que este concuerde
+            // $enca = encargado
+            $enca = $_POST['enc'];
+            // $custo = customer
+            $sql = hesk_dbQuery("SELECT id FROM hesk_customers ORDER BY id DESC LIMIT 1;");
+            $cust = hesk_dbFetchAssoc($sql);
+            $sql = "INSERT INTO hesk_customers_users (idcustomer,idencargado) VALUES ('$cust[id]','$enca')";
+            hesk_dbQuery($sql);
+        
+        
     }
 
 ?>
 
 <div style="margin-left: 10px;" class="main__content settings">
+
+    <h2 class="h1est"><a class="btnb btnb-danger" href="asignar_cliente_encargado.php">Asignamiento de clientes</a></h2>
+
     <h1 class="h1est">Agregar comodato</h1>
     <div class="table-wrap">
         <form action="add_customer.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>">
             <div class="form-group">
-                <input type="text" name="nombre" class="form-control">
+                <input placeholder="Nombre del comodato" type="text" name="nombre" class="form-control">
             </div>
             <div class="form-group">
                 <select name="zona" id="" class="form-control">
                     <?php 
                         $sql = "SELECT id,nombre FROM hesk_zones";
                         $res = hesk_dbQuery($sql);
-                        echo "<option disabled='true' value='0' selected>Asignar</option>";
+                        echo "<option disabled='true' value='0' selected>Asignar zona</option>";
                         while ($reg = hesk_dbFetchAssoc($res)) {
                             echo "<option value='$reg[id]'>$reg[nombre]</option>";
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select name="enc" id="" class="form-control">
+                    <?php 
+                        $sql = "SELECT id,name FROM hesk_users where rol=1";
+                        $res = hesk_dbQuery($sql);
+                        echo "<option disabled='true' value='0' selected>Asignar encargado</option>";
+                        while ($reg = hesk_dbFetchAssoc($res)) {
+                            echo "<option value='$reg[id]'>$reg[name]</option>";
                         }
                     ?>
                 </select>
