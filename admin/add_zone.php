@@ -169,6 +169,7 @@ if (isset($_POST['Crear'])) {
         </table>
     </div>
 </div>
+
 <script>
     $(document).ready(function() {
         $('#tablazonas').DataTable({
@@ -186,3 +187,4 @@ if (isset($_POST['Crear'])) {
 <?php require_once(HESK_PATH . 'inc/footer.inc.php'); ?>
 
 <script type="text/javascript" src="../js/no-resend.js"> </script>
+<script type="text/javascript" src="../js/validation.js"> </script>

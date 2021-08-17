@@ -52,7 +52,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
     <h1 class="h1est">Asignamiento de clientes y encargados</h1>
 
     <div class="table-wrap">
-        <form action="asignar_cliente_encargado.php" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" method="post">
+        <form action="asignar_cliente_encargado.php" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" method="post" >
             <div class="form-group">
                 <select name="customer" id="customer" class="form-control">
                     <option disabled selected value="0">Cliente</option>

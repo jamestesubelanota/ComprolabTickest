@@ -78,16 +78,17 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
     <h1 class="h1est">Agregar comodato</h1>
     <div class="table-wrap">
-        <form action="add_customer.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>">
+        <form action="add_customer.php" method="post" class="form <?php echo isset($_SESSION['iserror']) && count($_SESSION['iserror']) ? 'invalid' : ''; ?>" onsubmit="return validar()">
             <div class="form-group">
-                <input placeholder="Nombre del comodato" type="text" name="nombre" class="form-control">
+                <input placeholder="Nombre del comodato" type="text" id="nombre" name="nombre" class="form-control">
             </div>
             <div class="form-group">
-                <select name="zona" id="" class="form-control">
+                <select name="zona" id="zona" class="form-control">
                     <?php 
                         $sql = "SELECT id,nombre FROM hesk_zones";
                         $res = hesk_dbQuery($sql);
-                        echo "<option disabled='true' value='0' selected>Asignar zona</option>";
+                        echo "<option disabled='true' value='0' selected></option>";
+                        echo "<option disabled='true' value='0' selected></option>";
                         while ($reg = hesk_dbFetchAssoc($res)) {
                             echo "<option value='$reg[id]'>$reg[nombre]</option>";
                         }
@@ -96,11 +97,11 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
             </div>
 
             <div class="form-group">
-                <select name="enc" id="" class="form-control">
+                <select name="enc" id="enc" class="form-control">
                     <?php 
                         $sql = "SELECT id,name FROM hesk_users where rol=1";
                         $res = hesk_dbQuery($sql);
-                        echo "<option disabled='true' value='0' selected>Asignar encargado</option>";
+                        echo "<option disabled='true' value='0' selected></option>";
                         while ($reg = hesk_dbFetchAssoc($res)) {
                             echo "<option value='$reg[id]'>$reg[name]</option>";
                         }
@@ -108,7 +109,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
                 </select>
             </div>
 
-            <input type="submit" name="btnCrear" value="Crear" class="btnb btnb-primary">
+            <input type="submit" onclick="return validar()" name="btnCrear" value="Crear" class="btnb btnb-primary">
         </form>
     </div>
     <h1 class="h1est">Clientes registrados con encargado</h1>
@@ -126,7 +127,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
                 <?php
                 // consultar
                 //hu = hesk_users, hz=hesk_zones, hc=hesk_customers, hcu = hesk_customers_users
-                $sqlC = "SELECT hu.name as encargado, hc.id as ident, hc.nombre as cliente, hz.nombre as zona, hc.zona as idzona FROM `hesk_customers` hc JOIN `hesk_zones` hz ON hc.zona=hz.id JOIN hesk_customers_users hcu ON hcu.idcustomer=hc.id JOIN hesk_users hu ON hu.id = hcu.idencargado;
+                $sqlC = "SELECT hu.name as encargado, hc.id as ident, hc.nombre as cliente, hz.nombre as zona, hc.zona as idzona FROM `hesk_customers` hc left JOIN `hesk_zones` hz ON hc.zona=hz.id JOIN hesk_customers_users hcu ON hcu.idcustomer=hc.id JOIN hesk_users hu ON hu.id = hcu.idencargado;
 
                     ";
 
@@ -169,4 +170,5 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
     });
 </script>
 <script type="text/javascript" src="../js/no-resend.js"> </script>
+<script type="text/javascript" src="../js/validation.js"> </script>
 <?php require_once(HESK_PATH . 'inc/footer.inc.php'); ?>

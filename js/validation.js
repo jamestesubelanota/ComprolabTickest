@@ -2,18 +2,7 @@
 
 function validar() {
     // valores  conseguidos con getElementByid
-    id = document.getElementById("id").value;
 
-
-    // validacion de formulario  imput nombre de zona 
-
-    if (id == null || id.length == 0 || /^\s+$/.test(id)) {
-
-        swal("Campo id oblagatorio !");
-        return false;
-
-
-    }
 
     nombre = document.getElementById("nombre").value;
 
@@ -27,5 +16,28 @@ function validar() {
 
 
     }
+// validacion zona 
+  zona = document.getElementById("zona").value;
+
+  if( zona  == null || zona == 0 ){
+       
+    swal("Campo zona   obligatorio  !");
+
+    return false;
+
+
+}
+// validacion asignar cargo
+enc = document.getElementById("enc").value;
+
+  if( enc  == null || enc == 0 ){
+       
+    swal("Campo cargo  obligatorio  !");
+
+    return false;
+
+}
+
+// funcion de validar formulario 2
 
 }
