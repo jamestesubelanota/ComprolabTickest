@@ -484,7 +484,7 @@ $tmpvar['owner']   = 0;
 $tmpvar['history'] = sprintf($hesklang['thist15'], hesk_date(), $hesklang['customer']);
 
 // Auto assign tickets if aplicable
-$autoassign_owner = hesk_autoAssignTicket($tmpvar['category']);
+$autoassign_owner = hesk_autoAssignTicket($tmpvar['category'],$_POST['ticketzone']);
 if ($autoassign_owner)
 {
 	$tmpvar['owner']    = $autoassign_owner['id'];
@@ -502,6 +502,7 @@ if ($hesk_settings['attachments']['use'] && ! empty($attachments) )
     }
 }
 
+$tmpvar['zone'] = $_POST['ticketzone'];
 // Insert ticket to database
 $ticket = hesk_newTicket($tmpvar);
 

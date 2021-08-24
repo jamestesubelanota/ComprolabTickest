@@ -69,6 +69,8 @@ function hesk_newTicket($ticket)
         $ticket['due_date'] = '';
     }
 
+	
+
 	// Insert ticket into database
 	hesk_dbQuery("
 	INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets`
@@ -78,6 +80,7 @@ function hesk_newTicket($ticket)
 		`email`,
 		`category`,
 		`priority`,
+		`ticketZone`,
 		`subject`,
 		`message`,
 		`message_html`,
@@ -102,6 +105,7 @@ function hesk_newTicket($ticket)
 		'".hesk_dbEscape( hesk_mb_substr($ticket['email'], 0, 1000) )."',
 		'".intval($ticket['category'])."',
 		'".intval($ticket['priority'])."',
+		'$ticket[zone]',
 		'".hesk_dbEscape( hesk_mb_substr($ticket['subject'], 0, 255) )."',
 		'".hesk_dbEscape($ticket['message'])."',
 		'".hesk_dbEscape($ticket['message_html'])."',

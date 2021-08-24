@@ -607,7 +607,7 @@ function hesk_formatBytes($size, $translate_unit = 1, $precision = 2)
 } // End hesk_formatBytes()
 
 
-function hesk_autoAssignTicket($ticket_category)
+function hesk_autoAssignTicket($ticket_category,$ticket_zone)
 {
 	global $hesk_settings, $hesklang;
 
@@ -620,10 +620,12 @@ function hesk_autoAssignTicket($ticket_category)
 	$autoassign_owner = array();
 
 	/* Get all possible auto-assign staff, order by number of open tickets */
+	echo "$ticket_zone SI HAY";
 	$res = hesk_dbQuery("SELECT `t1`.`id`,`t1`.`user`,`t1`.`name`, `t1`.`email`, `t1`.`language`, `t1`.`isadmin`, `t1`.`categories`, `t1`.`notify_assigned`, `t1`.`heskprivileges`,
 					    (SELECT COUNT(*) FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` FORCE KEY (`statuses`) WHERE `owner`=`t1`.`id` AND `status` IN ('0','1','2','4','5') ) as `open_tickets`
-						FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` AS `t1`
-						WHERE `t1`.`autoassign`='1' AND `rol` = '1' ORDER BY `open_tickets` ASC, RAND()");
+						FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` AS `t1` JOIN `HESK_customers_users` AS `t2`
+                        ON `t1`.`id` = `t2`.`idencargado`
+WHERE `t1`.`autoassign`='1' AND `rol` = '1' AND `t2`.`idcustomer` = $ticket_zone ORDER BY `open_tickets` ASC, RAND();");
 
 	/* Loop through the rows and return the first appropriate one */
 	while ($myuser = hesk_dbFetchAssoc($res))
