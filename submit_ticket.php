@@ -501,7 +501,7 @@ if ($hesk_settings['attachments']['use'] && ! empty($attachments) )
         $tmpvar['attachments'] .= hesk_dbInsertID() . '#' . $myatt['real_name'] .',';
     }
 }
-
+// zona que viene desde el formulario en create-ticket.php
 $tmpvar['zone'] = $_POST['ticketzone'];
 // Insert ticket to database
 $ticket = hesk_newTicket($tmpvar);

@@ -1173,8 +1173,38 @@ $options = array(
                         <input type="hidden" name="token" value="<?php hesk_token_echo(); ?>">
                     </form>
                 </div>
+                <div>
+                    <?php 
+                        $cons = "SELECT * FROM hesk_customers WHERE id = $ticket[ticketZone]";
+                        $res = hesk_dbQuery($cons);
+                        $reg = hesk_dbFetchAssoc($res);
+                    ?>
+                    <br>
+                    <p> <strong> Zona (Cliente): </strong> <?php echo "$reg[nombre]" ?></p>
+                    <?php if ($ticket['category']==6):?>
+                        <button type="button" class="btnb btnb-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Añadir a lista</button>
+                    <?php endif; ?>
+                </div>
             </div>
         </article>
+
+        <div class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+            </div>
+        </div>
+</div>
         <?php
 
         if ( ! $hesk_settings['new_top'])
